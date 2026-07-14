@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرحباً - منصة اختبار الاختراق</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .status {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .status i {
+            font-size: 48px;
+            color: #10b981;
+            margin-bottom: 10px;
+        }
+        
+        .status h2 {
+            color: #10b981;
+            margin-bottom: 5px;
+        }
+        
+        .status p {
+            color: #666;
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .action-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .action-btn i {
+            font-size: 32px;
+        }
+        
+        .action-btn span {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .tools {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .tools h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tools ul {
+            list-style: none;
+        }
+        
+        .tools li {
+            padding: 10px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tools li i {
+            color: #667eea;
+        }
+        
+        .tools li a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .tools li a:hover {
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-shield-alt"></i> منصة اختبار الاختراق</h1>
+            <p>نظام متكامل لاختبار الأمان واكتشاف الثغرات</p>
+        </div>
+        
+        <div class="status">
+            <i class="fas fa-check-circle"></i>
+            <h2>النظام يعمل بنجاح!</h2>
+            <p>الخادم متصل على المنفذ 3001</p>
+        </div>
+        
+        <div class="actions">
+            <a href="/login.html" class="action-btn">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>تسجيل الدخول</span>
+            </a>
+            
+            <a href="/index.html" class="action-btn">
+                <i class="fas fa-home"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            
+            <a href="/debug-scan-flow.html" class="action-btn">
+                <i class="fas fa-bug"></i>
+                <span>أدوات التتبع</span>
+            </a>
+        </div>
+        
+        <div class="tools">
+            <h3><i class="fas fa-tools"></i> أدوات الاختبار والتتبع</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-chart-line"></i>
+                    <a href="/debug-scan-flow.html">تتبع المسار الكامل</a>
+                    <span style="margin-right: auto; color: #10b981; font-size: 12px;">موصى به</span>
+                </li>
+                <li>
+                    <i class="fas fa-flask"></i>
+                    <a href="/test-vuln-api.html">اختبار API الثغرات</a>
+                </li>
+                <li>
+                    <i class="fas fa-file-alt"></i>
+                    <a href="/test-scan-results.html">عرض نتائج الفحص</a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="tools">
+            <h3><i class="fas fa-book"></i> الأدلة والتوثيق</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-rocket"></i>
+                    <span>ابدأ-هنا-الآن.txt - دليل البدء السريع</span>
+                </li>
+                <li>
+                    <i class="fas fa-file-code"></i>
+                    <span>دليل-التشغيل-المحدث.md - دليل شامل</span>
+                </li>
+                <li>
+                    <i class="fas fa-search"></i>
+                    <span>دليل-تتبع-المشكلة.md - تشخيص المشاكل</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="tools">
+            <h3><i class="fas fa-info-circle"></i> معلومات الدخول</h3>
+            <ul>
+                <li>
+                    <i class="fas fa-user"></i>
+                    <strong>اسم المستخدم:</strong> admin
+                </li>
+                <li>
+                    <i class="fas fa-key"></i>
+                    <strong>كلمة المرور:</strong> password
+                </li>
+            </ul>
+        </div>
+        
+        <div class="footer">
+            <p>منصة اختبار الاختراق - نسخة متقدمة مع محرك فحص قوي</p>
+            <p style="margin-top: 5px;">للدعم والمساعدة، راجع الأدلة المرفقة</p>
+        </div>
+    </div>
+</body>
+</html>

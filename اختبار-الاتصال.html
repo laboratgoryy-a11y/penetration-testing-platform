@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الاتصال - منصة اختبار الاختراق</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .status {
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .status.checking {
+            background: #ffeaa7;
+            color: #d63031;
+        }
+
+        .status.success {
+            background: #55efc4;
+            color: #00b894;
+        }
+
+        .status.error {
+            background: #ff7675;
+            color: #d63031;
+        }
+
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #666;
+        }
+
+        .value {
+            color: #333;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .links a {
+            display: inline-block;
+            margin: 5px 10px;
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 اختبار الاتصال بالخادم</h1>
+        
+        <div id="status" class="status checking">
+            <div class="spinner"></div>
+            جاري فحص الاتصال...
+        </div>
+
+        <div id="info" class="info" style="display: none;">
+            <div class="info-item">
+                <span class="label">حالة الخادم:</span>
+                <span class="value" id="serverStatus">-</span>
+            </div>
+            <div class="info-item">
+                <span class="label">قاعدة البيانات:</span>
+                <span class="value" id="database">-</span>
+            </div>
+            <div class="info-item">
+                <span class="label">الوقت:</span>
+                <span class="value" id="timestamp">-</span>
+            </div>
+            <div class="info-item">
+                <span class="label">زمن الاستجابة:</span>
+                <span class="value" id="responseTime">-</span>
+            </div>
+        </div>
+
+        <button class="btn" onclick="checkConnection()">🔄 إعادة الفحص</button>
+
+        <div class="links">
+            <a href="http://localhost:3001/login.html" target="_blank">🔐 صفحة الدخول</a>
+            <a href="http://localhost:3001/index.html" target="_blank">📊 الواجهة الرئيسية</a>
+            <a href="http://localhost:3001/health" target="_blank">💚 Health Check</a>
+        </div>
+    </div>
+
+    <script>
+        async function checkConnection() {
+            const statusDiv = document.getElementById('status');
+            const infoDiv = document.getElementById('info');
+            
+            statusDiv.className = 'status checking';
+            statusDiv.innerHTML = '<div class="spinner"></div>جاري فحص الاتصال...';
+            infoDiv.style.display = 'none';
+
+            const startTime = Date.now();
+
+            try {
+                const response = await fetch('http://localhost:3001/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const responseTime = Date.now() - startTime;
+
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✅ الخادم يعمل بنجاح!';
+                    
+                    document.getElementById('serverStatus').textContent = data.data.status || 'ok';
+                    document.getElementById('database').textContent = data.data.database || 'sqlite';
+                    document.getElementById('timestamp').textContent = new Date(data.data.timestamp).toLocaleString('ar-EG');
+                    document.getElementById('responseTime').textContent = responseTime + ' ms';
+                    
+                    infoDiv.style.display = 'block';
+                } else {
+                    throw new Error('Server returned error: ' + response.status);
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = `
+                    ❌ فشل الاتصال بالخادم!
+                    <br><br>
+                    <small style="font-weight: normal;">
+                        ${error.message}
+                        <br><br>
+                        تأكد من:
+                        <br>• الخادم يعمل على المنفذ 3001
+                        <br>• شغل: تشغيل-محسّن.bat
+                    </small>
+                `;
+            }
+        }
+
+        // فحص تلقائي عند تحميل الصفحة
+        window.addEventListener('load', checkConnection);
+
+        // فحص تلقائي كل 10 ثوانٍ
+        setInterval(checkConnection, 10000);
+    </script>
+</body>
+</html>

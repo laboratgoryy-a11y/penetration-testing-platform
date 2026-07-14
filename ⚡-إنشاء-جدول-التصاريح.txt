@@ -1,0 +1,80 @@
+═══════════════════════════════════════════════════════════
+   🔑 إنشاء جدول التصاريح
+═══════════════════════════════════════════════════════════
+
+لكي تعمل التصاريح، يجب إنشاء جدول authorizations
+
+═══════════════════════════════════════════════════════════
+   الخطوة 1: إنشاء الجدول
+═══════════════════════════════════════════════════════════
+
+1. افتح phpMyAdmin
+2. اختر قاعدة البيانات "web scanner"
+3. اضغط على تبويب SQL
+4. انسخ والصق الكود من ملف:
+   create-authorizations-table.sql
+
+أو انسخ هذا الكود مباشرة:
+
+┌─────────────────────────────────────────────────────────┐
+│ USE `web scanner`;                                      │
+│                                                         │
+│ CREATE TABLE IF NOT EXISTS authorizations (            │
+│   id VARCHAR(36) PRIMARY KEY,                          │
+│   organization_name VARCHAR(255) NOT NULL,             │
+│   contact_person VARCHAR(255) NOT NULL,                │
+│   contact_email VARCHAR(255) NOT NULL,                 │
+│   contact_phone VARCHAR(50),                           │
+│   target_scope TEXT NOT NULL,                          │
+│   allowed_operations TEXT NOT NULL,                    │
+│   valid_from DATETIME NOT NULL,                        │
+│   valid_until DATETIME NOT NULL,                       │
+│   status ENUM('ACTIVE','EXPIRED','REVOKED')            │
+│     DEFAULT 'ACTIVE',                                  │
+│   created_by INT,                                      │
+│   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,       │
+│   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP        │
+│     ON UPDATE CURRENT_TIMESTAMP,                       │
+│   revoked_at DATETIME NULL,                            │
+│   revoked_by INT NULL,                                 │
+│   revocation_reason TEXT NULL                          │
+│ );                                                      │
+│                                                         │
+│ -- إضافة تصريح تجريبي                                 │
+│ INSERT INTO authorizations (                           │
+│   id, organization_name, contact_person,               │
+│   contact_email, target_scope,                         │
+│   allowed_operations, valid_from, valid_until,         │
+│   status, created_by                                   │
+│ ) VALUES (                                              │
+│   UUID(), 'شركة الاختبار', 'مدير الأمن',              │
+│   'security@test.com',                                 │
+│   'https://example.com, 192.168.1.0/24',               │
+│   'WEB_SCAN,NETWORK_TEST,PHISHING_CAMPAIGN',           │
+│   NOW(), DATE_ADD(NOW(), INTERVAL 1 YEAR),             │
+│   'ACTIVE', 1                                          │
+│ );                                                      │
+└─────────────────────────────────────────────────────────┘
+
+5. اضغط Go أو تنفيذ
+
+═══════════════════════════════════════════════════════════
+   الخطوة 2: تحديث الصفحة
+═══════════════════════════════════════════════════════════
+
+بعد إنشاء الجدول:
+
+1. ارجع إلى المتصفح
+2. اضغط F5 لتحديث الصفحة
+3. افتح نافذة تحليل الشبكة مرة أخرى
+4. يجب أن ترى التصريح التجريبي في القائمة
+
+═══════════════════════════════════════════════════════════
+   ✅ بعد التحديث
+═══════════════════════════════════════════════════════════
+
+- ستظهر التصاريح في القائمة المنسدلة
+- يمكنك إنشاء تصاريح جديدة من قسم "التصاريح"
+- يمكنك استخدام التصاريح في جميع العمليات
+
+═══════════════════════════════════════════════════════════

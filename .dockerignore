@@ -1,0 +1,45 @@
+# Node modules
+node_modules
+npm-debug.log
+
+# Build output
+dist
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Tests
+src/__tests__
+*.test.ts
+*.spec.ts
+coverage
+.nyc_output
+
+# Documentation
+docs
+*.md
+!README.md
+
+# CI/CD
+.github
+.gitlab-ci.yml
+
+# Kiro
+.kiro
+
+# Misc
+.DS_Store
+Thumbs.db
+*.log

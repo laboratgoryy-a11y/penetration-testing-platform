@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فحص IP - منصة اختبار الاختراق</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <link rel="stylesheet" href="/css/ip-scanner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h2>منصة الاختراق</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="/ip-scanner.html" class="nav-item active">
+                <i class="fas fa-network-wired"></i>
+                <span>فحص IP</span>
+            </a>
+            <a href="/index.html#web-scan" class="nav-item">
+                <i class="fas fa-globe"></i>
+                <span>فحص الويب</span>
+            </a>
+            <a href="/index.html#phishing" class="nav-item">
+                <i class="fas fa-fish"></i>
+                <span>حملات التصيد</span>
+            </a>
+            <a href="/index.html#network" class="nav-item">
+                <i class="fas fa-network-wired"></i>
+                <span>تحليل الشبكات</span>
+            </a>
+            <a href="/index.html#reports" class="nav-item">
+                <i class="fas fa-file-alt"></i>
+                <span>التقارير</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="username">المستخدم</span>
+            </div>
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>فحص IP باستخدام Nmap</h1>
+            <div class="header-actions">
+                <button class="btn-icon" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">0</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content">
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="/index.html"><i class="fas fa-home"></i> الرئيسية</a>
+                <span class="separator">/</span>
+                <span>فحص IP</span>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions" style="margin-bottom: 30px;">
+                <button class="btn-primary btn-lg" id="start-ip-scan-btn">
+                    <i class="fas fa-play-circle"></i>
+                    بدء فحص جديد
+                </button>
+                <button class="btn-success" id="discover-network-btn">
+                    <i class="fas fa-search-location"></i>
+                    اكتشاف الأجهزة القريبة
+                </button>
+                <button class="btn-secondary" id="compare-scans-btn">
+                    <i class="fas fa-exchange-alt"></i>
+                    مقارنة الفحوصات
+                </button>
+                <button class="btn-secondary" onclick="window.location.href='/ip-scanner-schedules.html'">
+                    <i class="fas fa-calendar-alt"></i>
+                    الفحوصات المجدولة
+                </button>
+                <button class="btn-secondary" onclick="window.ipScannerManager.loadRecentScans()">
+                    <i class="fas fa-sync-alt"></i>
+                    تحديث
+                </button>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-scans-count">0</h3>
+                        <p>إجمالي الفحوصات</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="running-scans-count">0</h3>
+                        <p>فحوصات جارية</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="completed-scans-count">0</h3>
+                        <p>فحوصات مكتملة</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="vulnerabilities-count">0</h3>
+                        <p>ثغرات مكتشفة</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans -->
+            <div class="card" style="margin-top: 30px;">
+                <div class="card-header">
+                    <h2><i class="fas fa-history"></i> الفحوصات الأخيرة</h2>
+                    <div class="card-actions">
+                        <button class="btn-sm btn-secondary" onclick="window.ipScannerManager.loadRecentScans()">
+                            <i class="fas fa-sync-alt"></i> تحديث
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="recent-scans-list" class="scans-grid">
+                        <div class="loading-spinner">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>جاري التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scan Types Info -->
+            <div class="info-section" style="margin-top: 30px;">
+                <h2><i class="fas fa-info-circle"></i> أنواع الفحوصات المتاحة</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>فحص سريع</h3>
+                        <p>فحص سريع لأشهر 100 منفذ. مناسب للفحص الأولي السريع.</p>
+                        <span class="badge badge-info">~2-5 دقائق</span>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>فحص شامل</h3>
+                        <p>فحص كامل لجميع المنافذ مع كشف الخدمات ونظام التشغيل.</p>
+                        <span class="badge badge-warning">~30-60 دقيقة</span>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-door-open"></i>
+                        </div>
+                        <h3>فحص المنافذ</h3>
+                        <p>فحص حالة المنافذ فقط (مفتوح/مغلق/مفلتر).</p>
+                        <span class="badge badge-success">~5-10 دقائق</span>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <h3>كشف الخدمات</h3>
+                        <p>تحديد الخدمات والإصدارات المشغلة على المنافذ المفتوحة.</p>
+                        <span class="badge badge-info">~10-20 دقيقة</span>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-desktop"></i>
+                        </div>
+                        <h3>كشف نظام التشغيل</h3>
+                        <p>محاولة تحديد نظام التشغيل المستخدم على الهدف.</p>
+                        <span class="badge badge-info">~5-15 دقيقة</span>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-bug"></i>
+                        </div>
+                        <h3>فحص الثغرات</h3>
+                        <p>فحص شامل للثغرات الأمنية باستخدام NSE scripts.</p>
+                        <span class="badge badge-danger">~20-40 دقيقة</span>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <h3>فحص خفي</h3>
+                        <p>فحص بطيء وخفي لتجنب أنظمة الكشف.</p>
+                        <span class="badge badge-secondary">~1-2 ساعة</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/ip-scan-report-normalizer.js"></script>
+    <script src="/js/error-handler.js"></script>
+    <script src="/js/notification-manager.js"></script>
+    <script src="/js/loading-manager.js"></script>
+    <script src="/js/ip-scanner-manager.js"></script>
+    <script src="/js/ip-scanner-ui-enhancements.js"></script>
+    <script src="/js/ip-scan-import-manager.js"></script>
+    <script src="/js/ip-scan-comparison-manager.js"></script>
+    
+    <script>
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', async () => {
+            
+            // الانتظار قليلاً للتأكد من تحميل جميع الملفات
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            // التحقق من تحميل المكتبات المطلوبة
+            if (typeof api === 'undefined') {
+                console.error('API is not loaded!');
+                alert('خطأ: لم يتم تحميل API. يرجى تحديث الصفحة.');
+                return;
+            }
+            
+            // تهيئة auth إذا لم يتم تهيئته
+            if (!window.auth) {
+                window.auth = new AuthManager(api);
+            }
+            
+            // التحقق من المصادقة
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // التحقق من وجود ipScannerManager
+            if (typeof window.ipScannerManager === 'undefined') {
+                console.error('ipScannerManager is not defined!');
+                alert('خطأ: لم يتم تحميل مدير فحص IP بشكل صحيح. يرجى تحديث الصفحة.');
+                return;
+            }
+
+            // تهيئة مدير فحص IP
+            try {
+                window.ipScannerManager.initialize();
+            } catch (error) {
+                console.error('Error initializing IP Scanner Manager:', error);
+            }
+
+            // تحميل الإحصائيات
+            loadStats();
+
+            // زر تسجيل الخروج
+            document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                window.auth.logout();
+            });
+
+            // زر اكتشاف الشبكة
+            document.getElementById('discover-network-btn')?.addEventListener('click', () => {
+                window.ipScannerManager.discoverNetwork();
+            });
+
+            // زر القائمة
+            document.getElementById('menuToggle')?.addEventListener('click', () => {
+                document.getElementById('sidebar')?.classList.toggle('collapsed');
+            });
+        });
+
+        // تحميل الإحصائيات
+        async function loadStats() {
+            try {
+                const response = await api.get('/ip-scans?limit=100');
+                
+                if (response.success && response.data.scans) {
+                    const scans = response.data.scans;
+                    
+                    document.getElementById('total-scans-count').textContent = scans.length;
+                    document.getElementById('running-scans-count').textContent = 
+                        scans.filter(s => s.status === 'RUNNING').length;
+                    document.getElementById('completed-scans-count').textContent = 
+                        scans.filter(s => s.status === 'COMPLETED').length;
+                    
+                    // حساب الثغرات (سيتم تحديثه لاحقاً)
+                    document.getElementById('vulnerabilities-count').textContent = '0';
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+    </script>
+</body>
+</html>

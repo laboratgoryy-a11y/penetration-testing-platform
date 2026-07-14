@@ -1,0 +1,30 @@
+{
+  "scripts": {
+    "mysql:test": "node test-mysql-connection.js",
+    "mysql:convert": "copy src\\database\\connection-mysql-complete.ts src\\database\\connection.ts",
+    "mysql:install": "npm install mysql2",
+    "mysql:setup": "npm run mysql:install && npm run mysql:convert",
+    "mysql:full-setup": "npm run mysql:setup && node test-mysql-connection.js"
+  },
+  "description": "إضافة هذه السكريبتات إلى package.json الرئيسي",
+  "instructions": {
+    "ar": [
+      "انسخ السكريبتات أعلاه إلى ملف package.json الرئيسي",
+      "ثم استخدم:",
+      "  npm run mysql:test - اختبار الاتصال",
+      "  npm run mysql:convert - نسخ ملف الاتصال",
+      "  npm run mysql:install - تثبيت mysql2",
+      "  npm run mysql:setup - إعداد كامل",
+      "  npm run mysql:full-setup - إعداد واختبار"
+    ],
+    "en": [
+      "Copy the scripts above to your main package.json",
+      "Then use:",
+      "  npm run mysql:test - Test connection",
+      "  npm run mysql:convert - Copy connection file",
+      "  npm run mysql:install - Install mysql2",
+      "  npm run mysql:setup - Full setup",
+      "  npm run mysql:full-setup - Setup and test"
+    ]
+  }
+}

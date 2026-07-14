@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقدم الفحص - منصة اختبار الاختراق</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/ip-scanner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .progress-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+        }
+
+        .progress-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .progress-header h1 {
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-container {
+            background: #f1f5f9;
+            border-radius: var(--radius-lg);
+            height: 40px;
+            overflow: hidden;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .scan-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 20px;
+            background: var(--light-color);
+            border-radius: var(--radius-md);
+        }
+
+        .info-item i {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: 0.9em;
+            color: #64748b;
+            margin-bottom: 5px;
+        }
+
+        .info-item .value {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .scan-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .error-message {
+            background: #fee2e2;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-message i {
+            color: #dc2626;
+            margin-left: 10px;
+        }
+
+        .error-text {
+            color: #991b1b;
+        }
+
+        .loading-animation {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-animation i {
+            font-size: 3em;
+            color: var(--primary-color);
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h2>منصة الاختراق</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="/index.html" class="nav-item">
+                <i class="fas fa-home"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="/ip-scanner.html" class="nav-item active">
+                <i class="fas fa-server"></i>
+                <span>فحص IP</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="username">المستخدم</span>
+            </div>
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>تقدم الفحص</h1>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content">
+            <!-- Breadcrumbs -->
+            <div class="breadcrumbs">
+                <a href="/index.html"><i class="fas fa-home"></i> الرئيسية</a>
+                <span class="separator">/</span>
+                <a href="/ip-scanner.html">فحص IP</a>
+                <span class="separator">/</span>
+                <span>تقدم الفحص</span>
+            </div>
+
+            <div class="progress-container">
+                <!-- Progress Card -->
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <h1><i class="fas fa-tasks"></i> جاري تنفيذ الفحص</h1>
+                        <span class="status-badge" id="scan-status-badge">جاري التنفيذ</span>
+                    </div>
+
+                    <!-- Progress Bar -->
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="scan-progress-bar" style="width: 0%;">
+                            <span id="scan-progress-text">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Scan Info -->
+                    <div class="scan-info-grid">
+                        <div class="info-item">
+                            <i class="fas fa-bullseye"></i>
+                            <label>الهدف</label>
+                            <div class="value" id="scan-target-info">-</div>
+                        </div>
+
+                        <div class="info-item">
+                            <i class="fas fa-cog"></i>
+                            <label>نوع الفحص</label>
+                            <div class="value" id="scan-type-info">-</div>
+                        </div>
+
+                        <div class="info-item">
+                            <i class="fas fa-clock"></i>
+                            <label>وقت البدء</label>
+                            <div class="value" id="scan-start-time">-</div>
+                        </div>
+
+                        <div class="info-item">
+                            <i class="fas fa-hourglass-half"></i>
+                            <label>الوقت المتبقي</label>
+                            <div class="value" id="scan-time-remaining">جاري الحساب...</div>
+                        </div>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div class="error-message" id="scan-error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>حدث خطأ:</strong>
+                        <p class="error-text"></p>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="scan-actions" id="scan-actions">
+                        <button class="btn-danger" onclick="stopCurrentScan(currentScanId)">
+                            <i class="fas fa-stop"></i> إيقاف الفحص
+                        </button>
+                        <button class="btn-secondary" onclick="window.location.href='/ip-scanner.html'">
+                            <i class="fas fa-arrow-right"></i> العودة للقائمة
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Loading Animation (shown initially) -->
+                <div class="loading-animation" id="loading-animation">
+                    <i class="fas fa-spinner"></i>
+                    <p>جاري تحميل معلومات الفحص...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/error-handler.js"></script>
+    <script src="/js/notification-manager.js"></script>
+    <script src="/js/loading-manager.js"></script>
+    <script src="/js/ip-scan-progress.js"></script>
+    
+    <script>
+        let currentScanId = null;
+        let progressComponent = null;
+
+        // تهيئة الصفحة
+        document.addEventListener('DOMContentLoaded', async () => {
+            // تهيئة auth
+            if (!window.auth) {
+                window.auth = new AuthManager(api);
+            }
+            
+            // التحقق من المصادقة
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // الحصول على scanId من URL
+            const urlParams = new URLSearchParams(window.location.search);
+            currentScanId = urlParams.get('scanId');
+
+            if (!currentScanId) {
+                notificationManager.error('معرف الفحص غير موجود');
+                setTimeout(() => {
+                    window.location.href = '/ip-scanner.html';
+                }, 2000);
+                return;
+            }
+
+            // إخفاء loading animation
+            setTimeout(() => {
+                document.getElementById('loading-animation').style.display = 'none';
+            }, 500);
+
+            // تهيئة مكون التقدم
+            progressComponent = new IPScanProgress(currentScanId);
+            await progressComponent.initialize();
+
+            // زر تسجيل الخروج
+            document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                if (progressComponent) {
+                    progressComponent.cleanup();
+                }
+                window.auth.logout();
+                window.location.href = '/login.html';
+            });
+
+            // زر القائمة
+            document.getElementById('menuToggle')?.addEventListener('click', () => {
+                document.getElementById('sidebar')?.classList.toggle('collapsed');
+            });
+        });
+
+        // تنظيف عند مغادرة الصفحة
+        window.addEventListener('beforeunload', () => {
+            if (progressComponent) {
+                progressComponent.cleanup();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار التصاريح</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        .auth-card {
+            background: #f9f9f9;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        .auth-card h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .field {
+            margin: 10px 0;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+        .field strong {
+            color: #666;
+            display: inline-block;
+            width: 150px;
+        }
+        .operations {
+            display: inline-flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .operation-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+        .status-active {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 اختبار تحميل التصاريح</h1>
+        
+        <div style="margin: 20px 0;">
+            <button onclick="loadAuthorizations()">🔄 تحميل التصاريح</button>
+            <button onclick="testIPScanFilter()">🔍 اختبار فلتر IP Scanner</button>
+            <button onclick="testWebScanFilter()">🌐 اختبار فلتر Web Scanner</button>
+        </div>
+        
+        <div id="results">
+            <div class="loading">انقر على "تحميل التصاريح" لبدء الاختبار</div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3001/api/v1';
+
+        async function loadAuthorizations() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">جاري التحميل...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/authorizations`);
+                const data = await response.json();
+
+                console.log('Response:', data);
+
+                if (data.success && data.data.authorizations) {
+                    const auths = data.data.authorizations;
+                    
+                    let html = `<h2>✅ تم تحميل ${auths.length} تصريح</h2>`;
+                    
+                    auths.forEach(auth => {
+                        const operations = Array.isArray(auth.allowed_operations) 
+                            ? auth.allowed_operations 
+                            : [];
+                        
+                        html += `
+                            <div class="auth-card">
+                                <h3>${auth.organization_name}</h3>
+                                <div class="field">
+                                    <strong>المعرف:</strong> ${auth.id}
+                                </div>
+                                <div class="field">
+                                    <strong>الحالة:</strong> 
+                                    <span class="status-active">${auth.status}</span>
+                                </div>
+                                <div class="field">
+                                    <strong>صالح من:</strong> ${new Date(auth.valid_from).toLocaleDateString('ar-SA')}
+                                </div>
+                                <div class="field">
+                                    <strong>صالح حتى:</strong> ${new Date(auth.valid_until).toLocaleDateString('ar-SA')}
+                                </div>
+                                <div class="field">
+                                    <strong>العمليات المسموحة:</strong>
+                                    <div class="operations">
+                                        ${operations.map(op => `<span class="operation-badge">${op}</span>`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    resultsDiv.innerHTML = html;
+                } else {
+                    resultsDiv.innerHTML = '<div class="error">❌ فشل تحميل التصاريح</div>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `<div class="error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+
+        async function testIPScanFilter() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">جاري اختبار فلتر IP Scanner...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/authorizations`);
+                const data = await response.json();
+
+                if (data.success && data.data.authorizations) {
+                    const allAuths = data.data.authorizations;
+                    
+                    const validAuths = allAuths.filter(auth => {
+                        const isActive = auth.status === 'ACTIVE';
+                        const notExpired = new Date(auth.valid_until) > new Date();
+                        const correctType = auth.allowed_operations && (
+                            auth.allowed_operations.includes('IP_SCAN') || 
+                            auth.allowed_operations.includes('ALL')
+                        );
+                        
+                        return isActive && notExpired && correctType;
+                    });
+
+                    let html = `
+                        <h2>🔍 نتائج فلتر IP Scanner</h2>
+                        <div class="field">
+                            <strong>إجمالي التصاريح:</strong> ${allAuths.length}
+                        </div>
+                        <div class="field">
+                            <strong>التصاريح الصالحة لـ IP Scanner:</strong> ${validAuths.length}
+                        </div>
+                    `;
+
+                    validAuths.forEach(auth => {
+                        html += `
+                            <div class="auth-card">
+                                <h3>✅ ${auth.organization_name}</h3>
+                                <div class="field">
+                                    <strong>المعرف:</strong> ${auth.id}
+                                </div>
+                                <div class="field">
+                                    <strong>صالح حتى:</strong> ${new Date(auth.valid_until).toLocaleDateString('ar-SA')}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    resultsDiv.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `<div class="error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+
+        async function testWebScanFilter() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="loading">جاري اختبار فلتر Web Scanner...</div>';
+
+            try {
+                const response = await fetch(`${API_URL}/authorizations`);
+                const data = await response.json();
+
+                if (data.success && data.data.authorizations) {
+                    const allAuths = data.data.authorizations;
+                    
+                    const validAuths = allAuths.filter(auth => {
+                        const isActive = auth.status === 'ACTIVE';
+                        const notExpired = new Date(auth.validUntil || auth.valid_until) > new Date();
+                        const correctType = auth.allowed_operations && (
+                            auth.allowed_operations.includes('WEB_SCAN') || 
+                            auth.allowed_operations.includes('ALL')
+                        );
+                        
+                        return isActive && notExpired && correctType;
+                    });
+
+                    let html = `
+                        <h2>🌐 نتائج فلتر Web Scanner</h2>
+                        <div class="field">
+                            <strong>إجمالي التصاريح:</strong> ${allAuths.length}
+                        </div>
+                        <div class="field">
+                            <strong>التصاريح الصالحة لـ Web Scanner:</strong> ${validAuths.length}
+                        </div>
+                    `;
+
+                    validAuths.forEach(auth => {
+                        html += `
+                            <div class="auth-card">
+                                <h3>✅ ${auth.organization_name}</h3>
+                                <div class="field">
+                                    <strong>المعرف:</strong> ${auth.id}
+                                </div>
+                                <div class="field">
+                                    <strong>صالح حتى:</strong> ${new Date(auth.valid_until).toLocaleDateString('ar-SA')}
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    resultsDiv.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `<div class="error">❌ خطأ: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

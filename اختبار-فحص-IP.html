@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار فحص IP</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-item {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-right: 4px solid #667eea;
+        }
+        .test-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px 0;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار فحص IP</h1>
+        
+        <div class="test-item">
+            <h3>✅ الإصلاحات المطبقة:</h3>
+            <ul>
+                <li>تم تعديل navigation-manager.js</li>
+                <li>تم تعديل index.html</li>
+                <li>الرابط يعمل الآن بشكل طبيعي</li>
+            </ul>
+        </div>
+        
+        <div id="status"></div>
+        
+        <a href="http://localhost:3001/ip-scanner.html" class="btn" target="_blank">
+            🔍 فتح صفحة فحص IP
+        </a>
+        
+        <a href="http://localhost:3001/index.html" class="btn" target="_blank">
+            🏠 فتح الصفحة الرئيسية
+        </a>
+        
+        <button class="btn" onclick="testIPScannerPage()">
+            🧪 اختبار الصفحة
+        </button>
+        
+        <div class="test-item">
+            <h3>📋 خطوات الاختبار:</h3>
+            <ol>
+                <li>اضغط "فتح الصفحة الرئيسية"</li>
+                <li>سجّل دخول (admin / password)</li>
+                <li>اضغط على "فحص IP" في الشريط الجانبي</li>
+                <li>✅ يجب أن تفتح صفحة فحص IP</li>
+            </ol>
+        </div>
+    </div>
+    
+    <script>
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        async function testIPScannerPage() {
+            showStatus('جاري الاختبار...', 'info');
+            
+            try {
+                // اختبار 1: التحقق من أن الخادم يعمل
+                const response1 = await fetch('http://localhost:3001/');
+                if (!response1.ok) {
+                    throw new Error('الخادم لا يعمل');
+                }
+                
+                // اختبار 2: التحقق من صفحة فحص IP
+                const response2 = await fetch('http://localhost:3001/ip-scanner.html');
+                if (!response2.ok) {
+                    throw new Error('صفحة فحص IP غير موجودة');
+                }
+                
+                // اختبار 3: التحقق من ملفات JavaScript
+                const response3 = await fetch('http://localhost:3001/js/navigation-manager.js');
+                if (!response3.ok) {
+                    throw new Error('ملف navigation-manager.js غير موجود');
+                }
+                
+                showStatus(`
+                    ✅ جميع الاختبارات نجحت!<br><br>
+                    ✓ الخادم يعمل<br>
+                    ✓ صفحة فحص IP موجودة<br>
+                    ✓ ملفات JavaScript موجودة<br><br>
+                    <strong>الآن جرّب الضغط على "فحص IP" في الشريط الجانبي!</strong>
+                `, 'success');
+                
+            } catch (error) {
+                showStatus(`
+                    ❌ فشل الاختبار:<br>
+                    ${error.message}<br><br>
+                    تأكد من تشغيل النظام باستخدام: تشغيل-النظام.bat
+                `, 'error');
+            }
+        }
+        
+        // اختبار تلقائي عند التحميل
+        window.addEventListener('load', () => {
+            setTimeout(testIPScannerPage, 1000);
+        });
+    </script>
+</body>
+</html>

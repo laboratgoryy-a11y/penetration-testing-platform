@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>اختبار نموذج فحص IP</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/ip-scanner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .debug-info {
+            background: #f0f9ff;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 اختبار نموذج فحص IP</h1>
+        
+        <div class="debug-info" id="debug-info">
+            جاري التحميل...
+        </div>
+        
+        <button onclick="testShowForm()" class="btn-primary">
+            <i class="fas fa-play"></i> عرض النموذج
+        </button>
+        
+        <button onclick="testScanTypes()" class="btn-secondary">
+            <i class="fas fa-list"></i> اختبار أنواع الفحص
+        </button>
+        
+        <div id="form-container"></div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script src="/js/ip-scanner-manager.js"></script>
+    
+    <script>
+        const debugInfo = document.getElementById('debug-info');
+        
+        function log(message) {
+            console.log(message);
+            debugInfo.innerHTML += message + '<br>';
+        }
+        
+        // تهيئة المدير
+        log('🚀 تهيئة IP Scanner Manager...');
+        
+        if (typeof IPScannerManager === 'undefined') {
+            log('❌ IPScannerManager غير معرف!');
+        } else {
+            log('✅ IPScannerManager معرف');
+            window.ipScannerManager = new IPScannerManager();
+            log('✅ تم إنشاء instance');
+            
+            // اختبار scanTypes
+            log('📊 أنواع الفحص:');
+            Object.entries(window.ipScannerManager.scanTypes).forEach(([key, value]) => {
+                log(`  - ${key}: ${value}`);
+            });
+        }
+        
+        function testShowForm() {
+            log('');
+            log('🔍 اختبار عرض النموذج...');
+            
+            if (!window.ipScannerManager) {
+                log('❌ ipScannerManager غير موجود!');
+                return;
+            }
+            
+            try {
+                window.ipScannerManager.showNewScanForm();
+                log('✅ تم استدعاء showNewScanForm()');
+                
+                // التحقق من وجود النموذج
+                setTimeout(() => {
+                    const modal = document.getElementById('scan-modal');
+                    if (modal) {
+                        log('✅ Modal موجود');
+                        
+                        const scanTypeSelect = document.getElementById('scan-type');
+                        if (scanTypeSelect) {
+                            log(`✅ قائمة نوع الفحص موجودة`);
+                            log(`📊 عدد الخيارات: ${scanTypeSelect.options.length}`);
+                            
+                            if (scanTypeSelect.options.length === 0) {
+                                log('❌ القائمة فارغة!');
+                            } else {
+                                log('✅ القائمة تحتوي على خيارات:');
+                                for (let i = 0; i < scanTypeSelect.options.length; i++) {
+                                    log(`  ${i + 1}. ${scanTypeSelect.options[i].value} - ${scanTypeSelect.options[i].text}`);
+                                }
+                            }
+                        } else {
+                            log('❌ قائمة نوع الفحص غير موجودة!');
+                        }
+                    } else {
+                        log('❌ Modal غير موجود!');
+                    }
+                }, 500);
+                
+            } catch (error) {
+                log(`❌ خطأ: ${error.message}`);
+                console.error(error);
+            }
+        }
+        
+        function testScanTypes() {
+            log('');
+            log('📋 اختبار أنواع الفحص...');
+            
+            if (!window.ipScannerManager) {
+                log('❌ ipScannerManager غير موجود!');
+                return;
+            }
+            
+            const scanTypes = window.ipScannerManager.scanTypes;
+            log(`✅ عدد الأنواع: ${Object.keys(scanTypes).length}`);
+            
+            // إنشاء HTML للخيارات
+            const optionsHtml = Object.entries(scanTypes).map(([key, value]) => 
+                `<option value="${key}">${value}</option>`
+            ).join('');
+            
+            log('✅ HTML المُنشأ:');
+            log(optionsHtml);
+            
+            // اختبار إنشاء قائمة منسدلة
+            const testSelect = document.createElement('select');
+            testSelect.innerHTML = optionsHtml;
+            log(`✅ عدد الخيارات في القائمة التجريبية: ${testSelect.options.length}`);
+        }
+    </script>
+</body>
+</html>

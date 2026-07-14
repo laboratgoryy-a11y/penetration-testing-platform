@@ -1,0 +1,227 @@
+/* ===== Performance Optimizations ===== */
+
+/* ===== Critical CSS - Above the Fold ===== */
+/* Load critical styles first for faster initial render */
+
+/* Optimize font loading */
+@font-face {
+    font-family: 'Segoe UI';
+    font-display: swap; /* Use system font until custom font loads */
+}
+
+/* Reduce repaints and reflows */
+* {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* GPU acceleration for animations */
+.sidebar,
+.modal,
+.toast,
+.notification,
+.dropdown-menu {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Optimize images */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Lazy loading for images */
+img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+img[loading="lazy"].loaded {
+    opacity: 1;
+}
+
+/* Optimize SVG icons */
+svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Reduce layout shifts */
+.card,
+.modal-content,
+.dropdown-menu {
+    contain: layout style paint;
+}
+
+/* Optimize scrolling */
+.sidebar-nav,
+.modal-body,
+.dropdown-menu {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+/* ===== Content Visibility API ===== */
+/* Improve rendering performance for off-screen content */
+.scan-list > *,
+.campaign-list > *,
+.network-tests-list > *,
+.reports-list > *,
+.authorizations-list > * {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 400px;
+}
+
+/* ===== Intersection Observer Optimization ===== */
+/* Elements that should be lazy loaded */
+.lazy-load {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.lazy-load.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== CSS Containment ===== */
+/* Isolate layout calculations */
+.card,
+.scan-item-card,
+.campaign-item-card,
+.network-test-card,
+.report-item,
+.authorization-item {
+    contain: layout style;
+}
+
+/* ===== Optimize Table Rendering ===== */
+.table {
+    table-layout: fixed;
+}
+
+.table th,
+.table td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ===== Optimize Modal Rendering ===== */
+.modal {
+    contain: layout style paint;
+}
+
+.modal-backdrop {
+    will-change: opacity;
+}
+
+/* ===== Optimize Dropdown Rendering ===== */
+.dropdown-menu {
+    contain: layout style paint;
+}
+
+/* ===== Reduce Paint Areas ===== */
+.btn:hover,
+.nav-item:hover,
+.card:hover {
+    isolation: isolate;
+}
+
+/* ===== Optimize Chart Rendering ===== */
+canvas {
+    will-change: transform;
+}
+
+/* ===== Debounce Scroll Events ===== */
+.scroll-container {
+    scroll-behavior: smooth;
+}
+
+
+/* ===== Critical Path CSS ===== */
+/* Inline these styles in production for faster first paint */
+
+/* Above the fold styles */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+}
+
+.main-content {
+    margin-right: var(--sidebar-width);
+}
+
+/* ===== Resource Hints ===== */
+/* Add these to HTML head for better performance:
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+<link rel="preload" href="/css/main.css" as="style">
+<link rel="preload" href="/js/main.js" as="script">
+*/
+
+/* ===== Optimize Web Fonts ===== */
+/* Use font-display: swap for better performance */
+@font-face {
+    font-family: 'Font Awesome 6 Free';
+    font-display: swap;
+}
+
+/* ===== Optimize Background Images ===== */
+/* Use CSS gradients instead of images when possible */
+.sidebar {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    /* Instead of background-image: url(...) */
+}
+
+/* ===== Optimize Shadows ===== */
+/* Use box-shadow sparingly and optimize values */
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    /* Simpler shadow = better performance */
+}
+
+/* ===== Optimize Transitions ===== */
+/* Limit transitions to transform and opacity for best performance */
+.btn,
+.nav-item,
+.card {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    /* Avoid transitioning properties that trigger layout/paint */
+}
+
+/* ===== Optimize Grid Layouts ===== */
+/* Use CSS Grid efficiently */
+.stats-grid,
+.scan-list,
+.campaign-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    /* Auto-fit is more performant than auto-fill in most cases */
+}
+

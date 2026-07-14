@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار فحص الويب - كفاءة عالية</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .scan-form {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .progress-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .progress-section.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 40px;
+            background: #f0f0f0;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .scan-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .log-section {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-left: 3px solid #00ff00;
+            padding-left: 10px;
+        }
+
+        .log-entry.error {
+            color: #ff4444;
+            border-left-color: #ff4444;
+        }
+
+        .log-entry.warning {
+            color: #ffaa00;
+            border-left-color: #ffaa00;
+        }
+
+        .log-entry.success {
+            color: #00ff00;
+            border-left-color: #00ff00;
+        }
+
+        .results-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .vulnerability-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #ff4444;
+        }
+
+        .vulnerability-card.critical {
+            border-left-color: #dc3545;
+        }
+
+        .vulnerability-card.high {
+            border-left-color: #fd7e14;
+        }
+
+        .vulnerability-card.medium {
+            border-left-color: #ffc107;
+        }
+
+        .vulnerability-card.low {
+            border-left-color: #28a745;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .severity-badge.critical {
+            background: #dc3545;
+        }
+
+        .severity-badge.high {
+            background: #fd7e14;
+        }
+
+        .severity-badge.medium {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .severity-badge.low {
+            background: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 اختبار فحص الويب - كفاءة عالية</h1>
+            <p>اختبار شامل لفحص المواقع واكتشاف الثغرات الأمنية</p>
+        </div>
+
+        <div class="scan-form">
+            <h2 style="margin-bottom: 20px;">إعدادات الفحص</h2>
+            <form id="scanForm">
+                <div class="form-group">
+                    <label>🌐 رابط الموقع المستهدف</label>
+                    <input type="url" id="targetUrl" placeholder="https://example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label>📜 معرف التصريح</label>
+                    <select id="authorizationId" required>
+                        <option value="">جاري التحميل...</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🔍 نوع الفحص</label>
+                    <select id="scanType">
+                        <option value="quick">سريع (عمق 2، 50 طلب)</option>
+                        <option value="standard" selected>قياسي (عمق 3، 100 طلب)</option>
+                        <option value="deep">عميق (عمق 5، 200 طلب)</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn" id="startBtn">
+                    🚀 بدء الفحص
+                </button>
+            </form>
+        </div>
+
+        <div class="progress-section" id="progressSection">
+            <h2 style="margin-bottom: 20px;">⏳ جاري الفحص...</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+            </div>
+
+            <div class="scan-stats">
+                <div class="stat-card">
+                    <div class="value" id="pagesScanned">0</div>
+                    <div class="label">صفحات تم فحصها</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="vulnsFound">0</div>
+                    <div class="label">ثغرات مكتشفة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="timeElapsed">0s</div>
+                    <div class="label">الوقت المنقضي</div>
+                </div>
+                <div class="stat-card">
+                    <div class="value" id="scanStatus">جاري التشغيل</div>
+                    <div class="label">الحالة</div>
+                </div>
+            </div>
+
+            <div class="log-section" id="logSection"></div>
+
+            <button class="btn" onclick="stopScan()" style="margin-top: 20px; background: #dc3545;">
+                ⏹️ إيقاف الفحص
+            </button>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <h2 style="margin-bottom: 20px;">📊 نتائج الفحص</h2>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3000/api/v1';
+        let currentScanId = null;
+        let pollingInterval = null;
+        let startTime = null;
+        let timeInterval = null;
+
+        // تحميل التصاريح عند تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadAuthorizations();
+        });
+
+        // تحميل التصاريح
+        async function loadAuthorizations() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/authorizations`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                const select = document.getElementById('authorizationId');
+                
+                if (data.success && data.data && data.data.length > 0) {
+                    select.innerHTML = '<option value="">اختر تصريحاً...</option>';
+                    data.data.forEach(auth => {
+                        if (auth.status === 'ACTIVE') {
+                            const option = document.createElement('option');
+                            option.value = auth.id;
+                            option.textContent = `${auth.organization_name} - ${auth.scope_type}`;
+                            select.appendChild(option);
+                        }
+                    });
+                } else {
+                    select.innerHTML = '<option value="">لا توجد تصاريح نشطة</option>';
+                    addLog('⚠️ لا توجد تصاريح نشطة. يرجى إنشاء تصريح أولاً.', 'warning');
+                }
+            } catch (error) {
+                console.error('Error loading authorizations:', error);
+                addLog('❌ فشل تحميل التصاريح: ' + error.message, 'error');
+            }
+        }
+
+        // بدء الفحص
+        document.getElementById('scanForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const targetUrl = document.getElementById('targetUrl').value;
+            const authorizationId = document.getElementById('authorizationId').value;
+            const scanType = document.getElementById('scanType').value;
+
+            if (!authorizationId) {
+                alert('يرجى اختيار تصريح');
+                return;
+            }
+
+            // إعدادات الفحص حسب النوع
+            const configs = {
+                quick: { maxDepth: 2, maxRequests: 50 },
+                standard: { maxDepth: 3, maxRequests: 100 },
+                deep: { maxDepth: 5, maxRequests: 200 }
+            };
+
+            const config = configs[scanType];
+
+            try {
+                document.getElementById('startBtn').disabled = true;
+                addLog('🚀 بدء الفحص...', 'success');
+                addLog(`📍 الهدف: ${targetUrl}`, 'success');
+                addLog(`⚙️ الإعدادات: عمق ${config.maxDepth}، ${config.maxRequests} طلب`, 'success');
+
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/scans/web`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        targetUrl,
+                        authorizationId,
+                        config: {
+                            maxDepth: config.maxDepth,
+                            maxRequests: config.maxRequests,
+                            respectRobotsTxt: true,
+                            vulnerabilityTypes: [
+                                'SQL_INJECTION',
+                                'XSS',
+                                'CSRF',
+                                'DIRECTORY_TRAVERSAL',
+                                'COMMAND_INJECTION'
+                            ]
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentScanId = data.data.id;
+                    addLog(`✅ تم بدء الفحص بنجاح! ID: ${currentScanId}`, 'success');
+                    
+                    // إخفاء النموذج وإظهار التقدم
+                    document.querySelector('.scan-form').style.display = 'none';
+                    document.getElementById('progressSection').classList.add('active');
+                    
+                    // بدء المراقبة
+                    startTime = Date.now();
+                    startPolling();
+                    startTimeCounter();
+                } else {
+                    throw new Error(data.error?.message || 'فشل بدء الفحص');
+                }
+            } catch (error) {
+                console.error('Error starting scan:', error);
+                addLog('❌ خطأ: ' + error.message, 'error');
+                document.getElementById('startBtn').disabled = false;
+            }
+        });
+
+        // بدء المراقبة
+        function startPolling() {
+            pollingInterval = setInterval(async () => {
+                try {
+                    const token = localStorage.getItem('token');
+                    const response = await fetch(`${API_BASE}/scans/web/${currentScanId}/status`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        updateProgress(data.data);
+                        
+                        // إذا انتهى الفحص
+                        if (data.data.status === 'COMPLETED' || data.data.status === 'FAILED' || data.data.status === 'STOPPED') {
+                            stopPolling();
+                            await loadResults();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Polling error:', error);
+                }
+            }, 2000); // كل ثانيتين
+        }
+
+        // إيقاف المراقبة
+        function stopPolling() {
+            if (pollingInterval) {
+                clearInterval(pollingInterval);
+                pollingInterval = null;
+            }
+            if (timeInterval) {
+                clearInterval(timeInterval);
+                timeInterval = null;
+            }
+        }
+
+        // بدء عداد الوقت
+        function startTimeCounter() {
+            timeInterval = setInterval(() => {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                document.getElementById('timeElapsed').textContent = formatTime(elapsed);
+            }, 1000);
+        }
+
+        // تحديث التقدم
+        function updateProgress(data) {
+            const progress = calculateProgress(data);
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressFill').textContent = progress + '%';
+            
+            document.getElementById('pagesScanned').textContent = data.total_requests || 0;
+            document.getElementById('vulnsFound').textContent = data.total_vulnerabilities || 0;
+            document.getElementById('scanStatus').textContent = translateStatus(data.status);
+            
+            addLog(`📊 التقدم: ${progress}% | صفحات: ${data.total_requests || 0} | ثغرات: ${data.total_vulnerabilities || 0}`, 'success');
+        }
+
+        // حساب التقدم
+        function calculateProgress(data) {
+            if (data.status === 'COMPLETED') return 100;
+            if (data.status === 'PENDING') return 0;
+            
+            // تقدير بناءً على عدد الصفحات
+            const scanned = data.total_requests || 0;
+            const estimated = Math.max(scanned * 1.5, 50);
+            return Math.min(Math.floor((scanned / estimated) * 100), 95);
+        }
+
+        // إيقاف الفحص
+        async function stopScan() {
+            if (!currentScanId) return;
+            
+            if (!confirm('هل أنت متأكد من إيقاف الفحص؟')) return;
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/scans/web/${currentScanId}/stop`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    addLog('⏹️ تم إيقاف الفحص', 'warning');
+                    stopPolling();
+                    await loadResults();
+                } else {
+                    throw new Error(data.error?.message || 'فشل إيقاف الفحص');
+                }
+            } catch (error) {
+                console.error('Error stopping scan:', error);
+                addLog('❌ خطأ في إيقاف الفحص: ' + error.message, 'error');
+            }
+        }
+
+        // تحميل النتائج
+        async function loadResults() {
+            try {
+                addLog('📥 جاري تحميل النتائج...', 'success');
+                
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${API_BASE}/scans/web/${currentScanId}/results`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    displayResults(data.data);
+                    document.getElementById('progressSection').classList.remove('active');
+                    document.getElementById('resultsSection').classList.add('active');
+                    addLog('✅ تم تحميل النتائج بنجاح', 'success');
+                } else {
+                    throw new Error(data.error?.message || 'فشل تحميل النتائج');
+                }
+            } catch (error) {
+                console.error('Error loading results:', error);
+                addLog('❌ خطأ في تحميل النتائج: ' + error.message, 'error');
+            }
+        }
+
+        // عرض النتائج
+        function displayResults(results) {
+            const container = document.getElementById('resultsContent');
+            
+            let html = `
+                <div class="scan-stats" style="margin-bottom: 30px;">
+                    <div class="stat-card">
+                        <div class="value">${results.summary.totalRequests}</div>
+                        <div class="label">إجمالي الطلبات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value">${results.summary.totalVulnerabilities}</div>
+                        <div class="label">إجمالي الثغرات</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" style="color: #dc3545;">${results.summary.criticalCount}</div>
+                        <div class="label">حرجة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" style="color: #fd7e14;">${results.summary.highCount}</div>
+                        <div class="label">عالية</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" style="color: #ffc107;">${results.summary.mediumCount}</div>
+                        <div class="label">متوسطة</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="value" style="color: #28a745;">${results.summary.lowCount}</div>
+                        <div class="label">منخفضة</div>
+                    </div>
+                </div>
+            `;
+
+            if (results.vulnerabilities.length === 0) {
+                html += `
+                    <div style="text-align: center; padding: 40px; background: #d4edda; border-radius: 10px;">
+                        <h2 style="color: #155724;">🎉 رائع! لم يتم اكتشاف أي ثغرات</h2>
+                        <p style="color: #155724; margin-top: 10px;">الموقع يبدو آمناً من الثغرات المختبرة</p>
+                    </div>
+                `;
+            } else {
+                html += '<h3 style="margin-bottom: 20px;">🐛 الثغرات المكتشفة:</h3>';
+                
+                results.vulnerabilities.forEach(vuln => {
+                    html += `
+                        <div class="vulnerability-card ${vuln.severity.toLowerCase()}">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <h4>${vuln.type}</h4>
+                                <span class="severity-badge ${vuln.severity.toLowerCase()}">${translateSeverity(vuln.severity)}</span>
+                            </div>
+                            <p style="color: #666; margin-bottom: 10px;">${vuln.description}</p>
+                            <p style="font-size: 14px; color: #999;">📍 ${vuln.location}</p>
+                            ${vuln.evidence ? `<p style="font-size: 14px; color: #999; margin-top: 5px;">🔍 ${vuln.evidence}</p>` : ''}
+                            ${vuln.remediation ? `<p style="font-size: 14px; color: #007bff; margin-top: 10px;">💡 ${vuln.remediation}</p>` : ''}
+                        </div>
+                    `;
+                });
+            }
+
+            html += `
+                <button class="btn" onclick="location.reload()" style="margin-top: 30px;">
+                    🔄 فحص جديد
+                </button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // إضافة سجل
+        function addLog(message, type = 'success') {
+            const logSection = document.getElementById('logSection');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString('ar-EG')}] ${message}`;
+            logSection.appendChild(entry);
+            logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        // دوال مساعدة
+        function translateStatus(status) {
+            const map = {
+                'PENDING': 'قيد الانتظار',
+                'RUNNING': 'قيد التشغيل',
+                'COMPLETED': 'مكتمل',
+                'FAILED': 'فشل',
+                'STOPPED': 'متوقف'
+            };
+            return map[status] || status;
+        }
+
+        function translateSeverity(severity) {
+            const map = {
+                'CRITICAL': 'حرجة',
+                'HIGH': 'عالية',
+                'MEDIUM': 'متوسطة',
+                'LOW': 'منخفضة'
+            };
+            return map[severity] || severity;
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+        }
+    </script>
+</body>
+</html>

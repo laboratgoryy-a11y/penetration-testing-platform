@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - منصة اختبار الاختراق</title>
+    <script src="/js/connectivity-guard.js?v=20260630-connectivity"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Enhanced Login Page Styles */
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            position: relative;
+            overflow-y: auto; /* Enable vertical scrolling */
+            overflow-x: hidden;
+        }
+
+        .login-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,154.7C960,171,1056,181,1152,165.3C1248,149,1344,107,1392,85.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+            pointer-events: none;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+            max-height: 95vh; /* Limit height */
+            overflow-y: auto; /* Enable scrolling inside card if needed */
+            margin: auto;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: visible; /* Allow content to be visible */
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 25px; /* Reduced padding */
+            text-align: center;
+        }
+
+        .login-header i {
+            font-size: 40px; /* Smaller icon */
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .login-header h1 {
+            font-size: 22px; /* Smaller title */
+            margin: 0 0 5px 0;
+            font-weight: 700;
+        }
+
+        .login-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 13px;
+        }
+
+        .login-warning {
+            background: #fff3cd;
+            border-right: 4px solid #ffc107;
+            padding: 12px 15px; /* Reduced padding */
+            margin: 15px 25px; /* Reduced margin */
+            border-radius: 8px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .login-warning i {
+            color: #ffc107;
+            font-size: 18px; /* Smaller icon */
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .login-warning p {
+            margin: 0;
+            font-size: 12px; /* Smaller text */
+            line-height: 1.5;
+            color: #856404;
+        }
+
+        .login-form {
+            padding: 25px; /* Reduced padding */
+        }
+
+        .form-group {
+            margin-bottom: 15px; /* Reduced margin */
+        }
+        }
+
+        .login-warning p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #856404;
+        }
+
+        .login-form {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .form-group label i {
+            margin-left: 8px;
+            color: #667eea;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input.error {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .form-group input.success {
+            border-color: #28a745;
+            background: #f0fff4;
+        }
+
+        .password-toggle {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: #667eea;
+        }
+
+        .field-error {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            animation: shake 0.3s;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            margin-left: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .forgot-password {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .forgot-password:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 20px 0; /* Reduced margin */
+            color: #999;
+            font-size: 13px; /* Smaller text */
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 12px; /* Reduced padding */
+        }
+
+        .social-login {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px; /* Reduced gap */
+            margin-top: 15px; /* Reduced margin */
+        }
+
+        .social-btn {
+            padding: 10px; /* Reduced padding */
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px; /* Reduced gap */
+            font-size: 13px; /* Smaller text */
+            font-weight: 600;
+        }
+
+        .social-btn:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+            transform: translateY(-2px);
+        }
+
+        .social-btn.google {
+            color: #db4437;
+        }
+
+        .social-btn.facebook {
+            color: #4267B2;
+        }
+
+        .social-btn i {
+            font-size: 18px;
+        }
+
+        .login-footer {
+            background: #f8f9fa;
+            padding: 15px; /* Reduced padding */
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .login-footer p {
+            margin: 0;
+            color: #666;
+            font-size: 12px; /* Smaller text */
+        }
+
+        .error-message {
+            background: #fff5f5;
+            border: 1px solid #dc3545;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 15px;
+            color: #dc3545;
+            font-size: 14px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* MFA Section */
+        #mfaSection {
+            background: #f0f7ff;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        #mfaSection input {
+            text-align: center;
+            font-size: 24px;
+            letter-spacing: 8px;
+            font-weight: 600;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 576px) {
+            .login-container {
+                max-width: 100%;
+            }
+
+            .login-header {
+                padding: 30px 20px;
+            }
+
+            .login-header h1 {
+                font-size: 20px;
+            }
+
+            .login-form {
+                padding: 20px;
+            }
+
+            .social-login {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-shield-alt"></i>
+                <h1>منصة اختبار الاختراق</h1>
+                <p>والأمن الهجومي</p>
+            </div>
+
+            <div class="login-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>تحذير قانوني:</strong> هذا النظام مخصص للاستخدام المصرح به فقط. أي محاولة للوصول غير المصرح بها ستتم مراقبتها وتسجيلها وقد تؤدي إلى ملاحقة قانونية.</p>
+            </div>
+
+            <form id="loginForm" class="login-form" novalidate>
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i>
+                        اسم المستخدم أو البريد الإلكتروني
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        autocomplete="username"
+                        placeholder="أدخل اسم المستخدم أو البريد الإلكتروني"
+                    >
+                    <div class="field-error" id="usernameError">يرجى إدخال اسم المستخدم أو البريد الإلكتروني</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        كلمة المرور
+                    </label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            required 
+                            autocomplete="current-password"
+                            placeholder="أدخل كلمة المرور"
+                            minlength="6"
+                        >
+                        <i class="fas fa-eye password-toggle" id="togglePassword"></i>
+                    </div>
+                    <div class="field-error" id="passwordError">كلمة المرور يجب أن تكون 6 أحرف على الأقل</div>
+                </div>
+
+                <div id="mfaSection" class="form-group" style="display: none;">
+                    <label for="mfaToken">
+                        <i class="fas fa-mobile-alt"></i>
+                        رمز المصادقة الثنائية (6 أرقام)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="mfaToken" 
+                        name="mfaToken" 
+                        placeholder="000000"
+                        maxlength="6"
+                        pattern="[0-9]{6}"
+                        inputmode="numeric"
+                    >
+                    <div class="field-error" id="mfaError">يرجى إدخال رمز صحيح مكون من 6 أرقام</div>
+                </div>
+
+                <div class="checkbox-wrapper">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span>تذكرني</span>
+                    </label>
+                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>تسجيل الدخول</span>
+                </button>
+
+                <div id="errorMessage" class="error-message"></div>
+
+                <div class="divider">
+                    <span>أو تسجيل الدخول عبر</span>
+                </div>
+
+                <div class="social-login">
+                    <button type="button" class="social-btn google" id="googleLogin">
+                        <i class="fab fa-google"></i>
+                        <span>Google</span>
+                    </button>
+                    <button type="button" class="social-btn facebook" id="facebookLogin">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>Facebook</span>
+                    </button>
+                </div>
+            </form>
+
+            <div class="login-footer">
+                <p>© 2025 منصة اختبار الاختراق. جميع الحقوق محفوظة.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>جاري تسجيل الدخول...</p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="/js/notification-manager.js"></script>
+    <script src="/js/loading-manager.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script>
+        // Enhanced Login Page Logic with Validation
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const mfaTokenInput = document.getElementById('mfaToken');
+            const errorMessage = document.getElementById('errorMessage');
+            const mfaSection = document.getElementById('mfaSection');
+            const loginBtn = document.getElementById('loginBtn');
+            const togglePassword = document.getElementById('togglePassword');
+            const googleLoginBtn = document.getElementById('googleLogin');
+            const facebookLoginBtn = document.getElementById('facebookLogin');
+            
+            let requiresMFA = false;
+
+            // تهيئة auth
+            if (!window.auth) {
+                window.auth = new AuthManager(api);
+            }
+
+            
+            // لا نقوم بالتحويل التلقائي - نسمح للمستخدم بتسجيل الدخول دائماً
+            // Clear any redirect flags
+            sessionStorage.removeItem('auth_redirect_flag');
+
+            // Password Toggle
+            togglePassword.addEventListener('click', () => {
+                const type = passwordInput.type === 'password' ? 'text' : 'password';
+                passwordInput.type = type;
+                togglePassword.classList.toggle('fa-eye');
+                togglePassword.classList.toggle('fa-eye-slash');
+            });
+
+            // Real-time Validation
+            usernameInput.addEventListener('input', () => {
+                validateField(usernameInput, validateUsername);
+            });
+
+            usernameInput.addEventListener('blur', () => {
+                validateField(usernameInput, validateUsername);
+            });
+
+            passwordInput.addEventListener('input', () => {
+                validateField(passwordInput, validatePassword);
+            });
+
+            passwordInput.addEventListener('blur', () => {
+                validateField(passwordInput, validatePassword);
+            });
+
+            mfaTokenInput.addEventListener('input', (e) => {
+                // Only allow numbers
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                validateField(mfaTokenInput, validateMFA);
+            });
+
+            // Validation Functions
+            function validateUsername(value) {
+                if (!value || value.trim().length === 0) {
+                    return { valid: false, message: 'يرجى إدخال اسم المستخدم أو البريد الإلكتروني' };
+                }
+                if (value.length < 3) {
+                    return { valid: false, message: 'اسم المستخدم يجب أن يكون 3 أحرف على الأقل' };
+                }
+                return { valid: true };
+            }
+
+            function validatePassword(value) {
+                if (!value || value.length === 0) {
+                    return { valid: false, message: 'يرجى إدخال كلمة المرور' };
+                }
+                if (value.length < 6) {
+                    return { valid: false, message: 'كلمة المرور يجب أن تكون 6 أحرف على الأقل' };
+                }
+                return { valid: true };
+            }
+
+            function validateMFA(value) {
+                if (!value || value.length === 0) {
+                    return { valid: false, message: 'يرجى إدخال رمز المصادقة' };
+                }
+                if (value.length !== 6 || !/^\d{6}$/.test(value)) {
+                    return { valid: false, message: 'يرجى إدخال رمز صحيح مكون من 6 أرقام' };
+                }
+                return { valid: true };
+            }
+
+            function validateField(input, validator) {
+                const result = validator(input.value);
+                const errorElement = document.getElementById(input.id + 'Error');
+                
+                if (!result.valid) {
+                    input.classList.add('error');
+                    input.classList.remove('success');
+                    if (errorElement) {
+                        errorElement.textContent = result.message;
+                        errorElement.classList.add('show');
+                    }
+                    return false;
+                } else {
+                    input.classList.remove('error');
+                    input.classList.add('success');
+                    if (errorElement) {
+                        errorElement.classList.remove('show');
+                    }
+                    return true;
+                }
+            }
+
+            function validateForm() {
+                let isValid = true;
+                
+                isValid = validateField(usernameInput, validateUsername) && isValid;
+                isValid = validateField(passwordInput, validatePassword) && isValid;
+                
+                if (requiresMFA && mfaSection.style.display !== 'none') {
+                    isValid = validateField(mfaTokenInput, validateMFA) && isValid;
+                }
+                
+                return isValid;
+            }
+
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.add('show');
+                setTimeout(() => {
+                    errorMessage.classList.remove('show');
+                }, 5000);
+            }
+
+            function hideError() {
+                errorMessage.classList.remove('show');
+            }
+
+            // Form Submit
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                // Validate form
+                if (!validateForm()) {
+                    notifications.error('يرجى تصحيح الأخطاء في النموذج');
+                    return;
+                }
+
+                const username = usernameInput.value.trim();
+                const password = passwordInput.value;
+                const mfaToken = mfaTokenInput.value || null;
+
+                hideError();
+                showLoading();
+                loginBtn.disabled = true;
+
+                try {
+                    const result = await window.auth.login(username, password, mfaToken);
+
+                    if (result.success) {
+                        notifications.success('تم تسجيل الدخول بنجاح');
+                        // Clear form
+                        loginForm.reset();
+                        // Set flag to prevent redirect loop
+                        sessionStorage.setItem('auth_redirect_flag', 'from_login');
+                        setTimeout(() => {
+                            window.location.replace('/index.html');
+                        }, 500);
+                    } else if (result.requiresMFA && !requiresMFA) {
+                        // Show MFA section
+                        requiresMFA = true;
+                        mfaSection.style.display = 'block';
+                        mfaTokenInput.required = true;
+                        mfaTokenInput.focus();
+                        notifications.info('يرجى إدخال رمز المصادقة الثنائية من تطبيق المصادقة');
+                        hideLoading();
+                        loginBtn.disabled = false;
+                    } else {
+                        // Show error
+                        const errorMsg = result.error || 'فشل تسجيل الدخول. يرجى التحقق من بيانات الدخول';
+                        showError(errorMsg);
+                        notifications.error(errorMsg);
+                        hideLoading();
+                        loginBtn.disabled = false;
+                        
+                        // Reset password field
+                        passwordInput.value = '';
+                        passwordInput.classList.remove('success', 'error');
+                        
+                        if (requiresMFA) {
+                            mfaTokenInput.value = '';
+                            mfaTokenInput.classList.remove('success', 'error');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    const errorMsg = 'حدث خطأ أثناء تسجيل الدخول. يرجى المحاولة مرة أخرى';
+                    showError(errorMsg);
+                    notifications.error(errorMsg);
+                    hideLoading();
+                    loginBtn.disabled = false;
+                }
+            });
+
+            // Social Login Handlers
+            googleLoginBtn.addEventListener('click', async () => {
+                notifications.info('جاري تحويلك إلى Google للمصادقة...');
+                showLoading();
+                
+                try {
+                    // In production, this would redirect to OAuth flow
+                    // For now, show a message
+                    setTimeout(() => {
+                        hideLoading();
+                        notifications.warning('تسجيل الدخول عبر Google غير متاح حالياً في وضع التطوير');
+                    }, 1000);
+                    
+                    // Production code would be:
+                    // window.location.href = '/api/v1/auth/google';
+                } catch (error) {
+                    hideLoading();
+                    notifications.error('فشل تسجيل الدخول عبر Google');
+                }
+            });
+
+            facebookLoginBtn.addEventListener('click', async () => {
+                notifications.info('جاري تحويلك إلى Facebook للمصادقة...');
+                showLoading();
+                
+                try {
+                    // In production, this would redirect to OAuth flow
+                    setTimeout(() => {
+                        hideLoading();
+                        notifications.warning('تسجيل الدخول عبر Facebook غير متاح حالياً في وضع التطوير');
+                    }, 1000);
+                    
+                    // Production code would be:
+                    // window.location.href = '/api/v1/auth/facebook';
+                } catch (error) {
+                    hideLoading();
+                    notifications.error('فشل تسجيل الدخول عبر Facebook');
+                }
+            });
+
+            // Forgot Password Handler
+            document.querySelector('.forgot-password').addEventListener('click', (e) => {
+                e.preventDefault();
+                notifications.info('سيتم إضافة ميزة استعادة كلمة المرور قريباً');
+            });
+
+            // Auto-focus on first input
+            usernameInput.focus();
+        });
+    </script>
+</body>
+</html>

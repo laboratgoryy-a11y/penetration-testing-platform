@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تقرير فحص عنوان IP</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <link rel="stylesheet" href="/css/ip-scanner.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h2>منصة الاختراق</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="/index.html" class="nav-item"><i class="fas fa-home"></i><span>لوحة التحكم</span></a>
+            <a href="/ip-scanner.html" class="nav-item active"><i class="fas fa-network-wired"></i><span>فحص عنوان IP</span></a>
+            <a href="/index.html#web-scan" class="nav-item"><i class="fas fa-globe"></i><span>فحص الويب</span></a>
+            <a href="/index.html#phishing" class="nav-item"><i class="fas fa-fish"></i><span>حملات التصيد</span></a>
+            <a href="/index.html#network" class="nav-item"><i class="fas fa-network-wired"></i><span>تحليل الشبكات</span></a>
+            <a href="/index.html#reports" class="nav-item"><i class="fas fa-file-alt"></i><span>التقارير</span></a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info"><i class="fas fa-user-circle"></i><span id="username">المستخدم</span></div>
+            <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i>تسجيل الخروج</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            <h1>تقرير فحص عنوان IP</h1>
+            <div class="header-actions"><span class="status-badge status-completed" id="scan-status-pill">مكتمل</span></div>
+        </header>
+
+        <div class="content">
+            <div class="breadcrumbs">
+                <a href="/index.html"><i class="fas fa-home"></i> الرئيسية</a>
+                <span class="separator">/</span>
+                <a href="/ip-scanner.html">فحص عنوان IP</a>
+                <span class="separator">/</span>
+                <span>التقرير</span>
+            </div>
+
+            <section class="scan-info-card" id="scan-info">
+                <div class="scan-info-header">
+                    <div>
+                        <h2 id="scan-target">جارٍ تحميل نتائج الأصل...</h2>
+                        <p class="scan-meta"><span id="scan-type">-</span><span class="separator">•</span><span id="scan-date">-</span></p>
+                        <p class="scan-meta"><span id="report-source-name">فحص النظام الداخلي</span><span class="separator">•</span><span id="report-source-type">runtime-scan</span></p>
+                    </div>
+                    <div class="scan-actions">
+                        <button class="btn-secondary" onclick="window.location.href='/ip-scanner.html'"><i class="fas fa-arrow-right"></i> رجوع للفحوصات</button>
+                        <button class="btn-secondary" id="refresh-results-btn"><i class="fas fa-rotate"></i> تحديث النتائج</button>
+                        <button class="btn-primary" id="export-report-btn"><i class="fas fa-file-download"></i> إنشاء تقرير</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats-grid" id="summary-stats"></section>
+
+            <section class="results-container">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="summary"><i class="fas fa-chart-pie"></i> الملخص</button>
+                    <button class="tab-btn" data-tab="overview"><i class="fas fa-table-list"></i> التقرير الكامل</button>
+                    <button class="tab-btn" data-tab="hosts"><i class="fas fa-server"></i> الأجهزة</button>
+                    <button class="tab-btn" data-tab="ports"><i class="fas fa-door-open"></i> المنافذ</button>
+                    <button class="tab-btn" data-tab="services"><i class="fas fa-gears"></i> الخدمات</button>
+                    <button class="tab-btn" data-tab="vulnerabilities"><i class="fas fa-shield-alt"></i> التحليل الأمني</button>
+                </div>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="summary-tab"><div id="summary-content"></div></div>
+                    <div class="tab-pane" id="overview-tab"><div id="overview-sections"></div></div>
+
+                    <div class="tab-pane" id="hosts-tab">
+                        <div class="table-controls">
+                            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="hosts-search" placeholder="ابحث في الأجهزة المكتشفة"></div>
+                            <div class="filter-group">
+                                <label>الحالة</label>
+                                <select id="hosts-status-filter">
+                                    <option value="all">الكل</option>
+                                    <option value="up">حي</option>
+                                    <option value="down">غير متاح</option>
+                                    <option value="filtered">مفلتر</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="hosts-table-container"></div>
+                    </div>
+
+                    <div class="tab-pane" id="ports-tab">
+                        <div class="table-controls">
+                            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="ports-search" placeholder="ابحث في المنافذ أو الخدمات"></div>
+                            <div class="filter-group">
+                                <label>الحالة</label>
+                                <select id="ports-state-filter">
+                                    <option value="all">الكل</option>
+                                    <option value="open">مفتوح</option>
+                                    <option value="closed">مغلق</option>
+                                    <option value="filtered">مفلتر</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>الترتيب</label>
+                                <select id="ports-sort-by">
+                                    <option value="risk">الخطورة</option>
+                                    <option value="port">رقم المنفذ</option>
+                                    <option value="service">الخدمة</option>
+                                    <option value="state">الحالة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="ports-table-container"></div>
+                    </div>
+
+                    <div class="tab-pane" id="services-tab">
+                        <div class="table-controls">
+                            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="services-search" placeholder="ابحث في الخدمات والتطبيقات"></div>
+                            <div class="filter-group">
+                                <label>الترتيب</label>
+                                <select id="services-sort-by">
+                                    <option value="service">الخدمة</option>
+                                    <option value="category">الفئة</option>
+                                    <option value="port">رقم المنفذ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="services-table-container"></div>
+                    </div>
+
+                    <div class="tab-pane" id="vulnerabilities-tab">
+                        <div class="table-controls">
+                            <div class="search-box"><i class="fas fa-search"></i><input type="text" id="vulns-search" placeholder="ابحث في الملاحظات الأمنية"></div>
+                            <div class="filter-group">
+                                <label>الخطورة</label>
+                                <select id="vulns-severity-filter">
+                                    <option value="all">الكل</option>
+                                    <option value="critical">حرجة</option>
+                                    <option value="high">عالية</option>
+                                    <option value="medium">متوسطة</option>
+                                    <option value="low">منخفضة</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label>الترتيب</label>
+                                <select id="vulns-sort-by">
+                                    <option value="severity">الخطورة</option>
+                                    <option value="title">العنوان</option>
+                                    <option value="port">رقم المنفذ</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="vulns-table-container"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/ip-scan-report-normalizer.js"></script>
+    <script src="/js/error-handler.js"></script>
+    <script src="/js/notification-manager.js"></script>
+    <script src="/js/loading-manager.js"></script>
+    <script src="/js/ip-scan-results-manager.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!window.auth) {
+                window.auth = new AuthManager(api);
+            }
+
+            if (!window.auth.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const scanId = urlParams.get('id');
+            const importKey = urlParams.get('importKey');
+
+            if (!scanId && !importKey) {
+                notificationManager.show('معرف الفحص أو مفتاح الاستيراد غير موجود.', 'error');
+                setTimeout(() => window.location.href = '/ip-scanner.html', 1200);
+                return;
+            }
+
+            window.ipScanResultsManager.initialize(scanId);
+
+            document.getElementById('logoutBtn')?.addEventListener('click', () => {
+                window.auth.logout();
+                window.location.href = '/login.html';
+            });
+
+            document.getElementById('menuToggle')?.addEventListener('click', () => {
+                document.getElementById('sidebar')?.classList.toggle('collapsed');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Test)
+  postgres-test:
+    image: postgres:16-alpine
+    container_name: pentest-postgres-test
+    environment:
+      POSTGRES_DB: penetration_testing_platform_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: testpassword
+    volumes:
+      - ./src/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - pentest-test-network
+    tmpfs:
+      - /var/lib/postgresql/data
+
+  # Redis Cache (Test)
+  redis-test:
+    image: redis:7-alpine
+    container_name: pentest-redis-test
+    command: redis-server --maxmemory 64mb --maxmemory-policy allkeys-lru
+    networks:
+      - pentest-test-network
+    tmpfs:
+      - /data
+
+  # Test Runner
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: pentest-test-runner
+    environment:
+      NODE_ENV: test
+      
+      # Database
+      DB_HOST: postgres-test
+      DB_PORT: 5432
+      DB_NAME: penetration_testing_platform_test
+      DB_USER: postgres
+      DB_PASSWORD: testpassword
+      
+      # Redis
+      REDIS_HOST: redis-test
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: ""
+      
+      # JWT
+      JWT_SECRET: test_secret_key
+      JWT_EXPIRES_IN: 30m
+      JWT_REFRESH_EXPIRES_IN: 7d
+      
+      # Encryption
+      ENCRYPTION_KEY: test_encryption_key_32_characters
+      
+      # Session
+      SESSION_TIMEOUT_MINUTES: 30
+      SESSION_MAX_DURATION_HOURS: 8
+      
+      # Rate Limiting
+      RATE_LIMIT_WINDOW_MS: 900000
+      RATE_LIMIT_MAX_REQUESTS: 100
+      
+      # Security
+      MFA_ISSUER: PenetrationTestingPlatform
+      FAILED_LOGIN_ATTEMPTS_LIMIT: 5
+      
+      # Data Retention
+      PHISHING_DATA_RETENTION_DAYS: 30
+      AUDIT_LOG_RETENTION_YEARS: 7
+    volumes:
+      - ./src:/app/src:ro
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./jest.config.js:/app/jest.config.js:ro
+      - /app/node_modules
+    networks:
+      - pentest-test-network
+    depends_on:
+      - postgres-test
+      - redis-test
+    command: npm test
+
+networks:
+  pentest-test-network:
+    driver: bridge

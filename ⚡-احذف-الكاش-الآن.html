@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ احذف الكاش الآن</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #dc2626;
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        
+        .warning {
+            background: #fef2f2;
+            border: 3px solid #dc2626;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        
+        .warning h2 {
+            color: #991b1b;
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .warning p {
+            color: #7f1d1d;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        
+        .steps {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: right;
+        }
+        
+        .steps h3 {
+            color: #111827;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .step {
+            background: white;
+            border-right: 5px solid #dc2626;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #dc2626;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+            margin-left: 15px;
+        }
+        
+        .step-text {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 18px;
+            color: #374151;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 20px 40px;
+            background: #dc2626;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            background: #b91c1c;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin: 15px 0;
+        }
+        
+        .countdown {
+            font-size: 72px;
+            font-weight: bold;
+            color: #dc2626;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ احذف الكاش الآن!</h1>
+        
+        <div class="warning">
+            <h2>⚠️ المشكلة:</h2>
+            <p>
+                <strong>الإصلاحات موجودة في الكود لكن المتصفح يستخدم الملفات القديمة من الكاش!</strong>
+            </p>
+        </div>
+        
+        <div class="steps">
+            <h3>🔧 الحل (30 ثانية):</h3>
+            
+            <div class="step">
+                <span class="step-number">1</span>
+                <span class="step-text">اضغط <strong>Ctrl + Shift + Delete</strong></span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">2</span>
+                <span class="step-text">اختر <strong>"Cached images and files"</strong></span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-text">اضغط <strong>"Clear data"</strong></span>
+            </div>
+            
+            <div class="step">
+                <span class="step-number">4</span>
+                <span class="step-text">اضغط <strong>Ctrl + F5</strong> (إعادة تحميل قوية)</span>
+            </div>
+        </div>
+        
+        <div style="margin: 30px 0;">
+            <button class="btn" onclick="clearCacheAndReload()">
+                🧹 امسح الكاش وأعد التحميل
+            </button>
+        </div>
+        
+        <div class="warning" style="background: #fef3c7; border-color: #f59e0b;">
+            <h2 style="color: #92400e;">💡 أو استخدم وضع التصفح الخفي:</h2>
+            <div class="code">
+                Ctrl + Shift + N (Chrome/Edge)
+            </div>
+            <p style="color: #78350f;">
+                ثم افتح: <strong>http://localhost:3000/index.html</strong>
+            </p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="http://localhost:3000/index.html" target="_blank" class="btn btn-success">
+                🌐 افتح النظام بعد مسح الكاش
+            </a>
+        </div>
+        
+        <div id="countdown" class="countdown" style="display: none;"></div>
+    </div>
+
+    <script>
+        function clearCacheAndReload() {
+            // Try to clear cache using Service Worker
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                    for(let registration of registrations) {
+                        registration.unregister();
+                    }
+                });
+            }
+            
+            // Clear localStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            // Show countdown
+            const countdownEl = document.getElementById('countdown');
+            countdownEl.style.display = 'block';
+            
+            let count = 3;
+            countdownEl.textContent = count;
+            
+            const interval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else {
+                    clearInterval(interval);
+                    countdownEl.textContent = '🚀';
+                    
+                    // Force reload with cache bypass
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:3000/index.html?' + new Date().getTime();
+                    }, 500);
+                }
+            }, 1000);
+        }
+        
+        // Auto-clear on load
+        window.addEventListener('load', () => {
+            // Clear localStorage and sessionStorage
+            localStorage.clear();
+            sessionStorage.clear();
+            
+            console.log('%c✅ تم مسح localStorage و sessionStorage', 'color: green; font-size: 20px; font-weight: bold;');
+            console.log('%c⚠️ الآن اضغط Ctrl + Shift + Delete لمسح الكاش الكامل', 'color: orange; font-size: 16px;');
+        });
+    </script>
+</body>
+</html>

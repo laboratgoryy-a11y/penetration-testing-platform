@@ -1,0 +1,245 @@
+═══════════════════════════════════════════════════════════════
+    📋 اطلب هذا من الذكاء الاصطناعي
+═══════════════════════════════════════════════════════════════
+
+🎯 المشكلة:
+────────────────────────────────────────
+الواجهة الأمامية ترسل البيانات بهذا الشكل:
+{
+  "target": {
+    "ssid": "faraa net",
+    "bssid": "4a:1f:4c:46:18:2b",
+    "authorizationId": "faraa-net-2024"
+  },
+  "config": {
+    "testTypes": ["TRAFFIC_ANALYSIS"],
+    "maxAttempts": 100
+  }
+}
+
+لكن السيرفر (server-sqlite.js) يتوقع:
+{
+  "ssid": "faraa net",
+  "bssid": "4a:1f:4c:46:18:2b",
+  "testType": "FULL"
+}
+
+═══════════════════════════════════════════════════════════════
+✅ الحل المطلوب:
+═══════════════════════════════════════════════════════════════
+
+تعديل endpoint في ملف server-sqlite.js
+السطر 644 تقريباً
+
+═══════════════════════════════════════════════════════════════
+📝 انسخ هذا النص وأرسله للذكاء الاصطناعي:
+═══════════════════════════════════════════════════════════════
+
+"أحتاج تعديل endpoint في Node.js Express:
+
+الكود الحالي في server-sqlite.js (السطر 644):
+
+```javascript
+app.post('/api/v1/network/tests', (req, res) => {
+  try {
+    const { ssid, bssid, testType } = req.body;
+    
+    if (!ssid) {
+      return res.status(400).json({ success: false, error: 'يرجى إدخال اسم الشبكة (SSID)' });
+    }
+
+    const testId = 'network-' + Date.now();
+    const insertTest = db.prepare(`
+      INSERT INTO network_test_sessions (id, user_id, ssid, bssid, status, config)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `);
+    
+    insertTest.run(testId, 'user-002', ssid, bssid || '00:00:00:00:00:00', 'PENDING', JSON.stringify({ test_type: testType || 'FULL' }));
+
+    const test = db.prepare('SELECT * FROM network_test_sessions WHERE id = ?').get(testId);
+    res.json({ 
+      success: true, 
+      data: { 
+        ...test,
+        sessionId: testId
+      }, 
+      message: 'تم بدء اختبار الشبكة بنجاح' 
+    });
+  } catch (error) {
+    console.error('Create network test error:', error);
+    res.status(500).json({ success: false, error: 'فشل إنشاء اختبار الشبكة' });
+  }
+});
+```
+
+المشكلة:
+الواجهة الأمامية ترسل البيانات بهذا الشكل:
+```json
+{
+  "target": {
+    "ssid": "faraa net",
+    "bssid": "4a:1f:4c:46:18:2b",
+    "authorizationId": "faraa-net-2024"
+  },
+  "config": {
+    "testTypes": ["TRAFFIC_ANALYSIS"],
+    "maxAttempts": 100
+  }
+}
+```
+
+المطلوب:
+1. تعديل الكود ليقرأ البيانات من target.ssid و target.bssid و target.authorizationId
+2. التحقق من authorizationId وأنه موجود في جدول authorizations
+3. التحقق من أن التصريح نشط (status = 'ACTIVE')
+4. حفظ authorizationId في جدول network_test_sessions
+5. حفظ testTypes من config في حقل config
+6. إرجاع البيانات بنفس الشكل الحالي
+
+جدول authorizations:
+- id (TEXT)
+- status (TEXT) - يجب أن يكون 'ACTIVE'
+- valid_until (TEXT) - يجب أن يكون في المستقبل
+
+جدول network_test_sessions:
+- id (TEXT)
+- user_id (TEXT)
+- authorization_id (TEXT) - أضف هذا الحقل
+- ssid (TEXT)
+- bssid (TEXT)
+- status (TEXT)
+- config (TEXT) - JSON
+- created_at (TEXT)
+
+استخدم SQLite مع better-sqlite3"
+
+═══════════════════════════════════════════════════════════════
+🎯 ما سيعطيك الذكاء الاصطناعي:
+═══════════════════════════════════════════════════════════════
+
+كود معدّل يقرأ البيانات بالشكل الصحيح:
+
+```javascript
+app.post('/api/v1/network/tests', (req, res) => {
+  try {
+    const { target, config } = req.body;
+    
+    // التحقق من البيانات المطلوبة
+    if (!target || !target.ssid) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'يرجى إدخال اسم الشبكة (SSID)' 
+      });
+    }
+    
+    if (!target.authorizationId) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'يرجى اختيار تصريح نشط' 
+      });
+    }
+    
+    // التحقق من التصريح
+    const authorization = db.prepare(
+      'SELECT * FROM authorizations WHERE id = ? AND status = ?'
+    ).get(target.authorizationId, 'ACTIVE');
+    
+    if (!authorization) {
+      return res.status(403).json({ 
+        success: false, 
+        error: 'التصريح غير صالح أو منتهي' 
+      });
+    }
+    
+    // إنشاء الفحص
+    const testId = 'network-' + Date.now();
+    const insertTest = db.prepare(`
+      INSERT INTO network_test_sessions 
+      (id, user_id, authorization_id, ssid, bssid, status, config)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+    
+    insertTest.run(
+      testId, 
+      'user-002',
+      target.authorizationId,
+      target.ssid, 
+      target.bssid || '00:00:00:00:00:00', 
+      'PENDING', 
+      JSON.stringify({
+        testTypes: config?.testTypes || ['TRAFFIC_ANALYSIS'],
+        maxAttempts: config?.maxAttempts || 100
+      })
+    );
+
+    const test = db.prepare(
+      'SELECT * FROM network_test_sessions WHERE id = ?'
+    ).get(testId);
+    
+    res.json({ 
+      success: true, 
+      data: { 
+        ...test,
+        sessionId: testId
+      }, 
+      message: 'تم بدء اختبار الشبكة بنجاح' 
+    });
+  } catch (error) {
+    console.error('Create network test error:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'فشل إنشاء اختبار الشبكة' 
+    });
+  }
+});
+```
+
+═══════════════════════════════════════════════════════════════
+📌 ملاحظات مهمة:
+═══════════════════════════════════════════════════════════════
+
+1. الملف المطلوب تعديله: server-sqlite.js
+2. السطر تقريباً: 644
+3. الـ endpoint: POST /api/v1/network/tests
+4. قاعدة البيانات: SQLite مع better-sqlite3
+5. الجدول: network_test_sessions
+
+═══════════════════════════════════════════════════════════════
+✅ بعد الحصول على الكود:
+═══════════════════════════════════════════════════════════════
+
+1. استبدل الكود القديم بالكود الجديد في server-sqlite.js
+2. احفظ الملف
+3. أعد تشغيل السيرفر:
+   - أوقف السيرفر (Ctrl + C)
+   - شغّله مرة أخرى: node server-sqlite.js
+4. أعد تحميل الصفحة في المتصفح (Ctrl + Shift + R)
+5. جرّب الفحص مرة أخرى
+
+═══════════════════════════════════════════════════════════════
+🔍 للتحقق من نجاح التعديل:
+═══════════════════════════════════════════════════════════════
+
+في Console (F12) ستشاهد:
+✅ POST http://localhost:3000/api/v1/network/tests 200 (OK)
+✅ تم بدء اختبار الشبكة بنجاح
+
+بدلاً من:
+❌ POST http://localhost:3000/api/v1/network/tests 400 (Bad Request)
+❌ يرجى إدخال اسم الشبكة (SSID)
+
+═══════════════════════════════════════════════════════════════
+💡 نصيحة:
+═══════════════════════════════════════════════════════════════
+
+إذا أعطاك الذكاء الاصطناعي كود مختلف قليلاً، تأكد من:
+✅ يقرأ target.ssid و target.bssid و target.authorizationId
+✅ يتحقق من التصريح في جدول authorizations
+✅ يحفظ authorization_id في network_test_sessions
+✅ يحفظ testTypes في config
+
+═══════════════════════════════════════════════════════════════
+
+📋 انسخ النص أعلاه وأرسله للذكاء الاصطناعي! 🚀
+
+═══════════════════════════════════════════════════════════════

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء تصريح تجريبي</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-right: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .step h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            margin-left: 10px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: transform 0.3s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #28a745;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #dc3545;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 2px solid #17a2b8;
+        }
+        
+        .credentials {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .credentials h4 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 إنشاء تصريح تجريبي</h1>
+        <p class="subtitle">لحل مشكلة "لا يوجد تصريح نشط"</p>
+        
+        <div class="credentials">
+            <h4>📋 بيانات الدخول:</h4>
+            <p>اسم المستخدم: <code>admin</code></p>
+            <p>كلمة المرور: <code>password</code></p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">1</span> تسجيل الدخول</h3>
+            <p>سنقوم بتسجيل الدخول تلقائياً باستخدام البيانات أعلاه</p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">2</span> إنشاء تصريح شامل</h3>
+            <p>سيتم إنشاء تصريح بنوع <code>ALL</code> يسمح بجميع العمليات</p>
+        </div>
+        
+        <div class="step">
+            <h3><span class="step-number">3</span> البدء بالفحص</h3>
+            <p>بعد إنشاء التصريح، يمكنك فحص أي موقع!</p>
+        </div>
+        
+        <div id="status"></div>
+        
+        <button id="btnCreate" class="btn" onclick="createAuthorization()">
+            🚀 إنشاء التصريح الآن
+        </button>
+        
+        <button id="btnGoToScan" class="btn" style="display:none;" onclick="goToWebScan()">
+            ✅ الذهاب إلى فحص الويب
+        </button>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:3000/api/v1';
+        let authToken = null;
+        
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+        }
+        
+        function showLoading(message) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status info';
+            statusDiv.innerHTML = `
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px;">${message}</p>
+                </div>
+            `;
+        }
+        
+        async function login() {
+            showLoading('جاري تسجيل الدخول...');
+            
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        username: 'admin',
+                        password: 'password'
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.data.token) {
+                    authToken = data.data.token;
+                    localStorage.setItem('token', authToken);
+                    showStatus('✅ تم تسجيل الدخول بنجاح!', 'success');
+                    return true;
+                } else {
+                    throw new Error(data.error || 'فشل تسجيل الدخول');
+                }
+            } catch (error) {
+                showStatus('❌ خطأ في تسجيل الدخول: ' + error.message, 'error');
+                return false;
+            }
+        }
+        
+        async function createAuthorizationRequest() {
+            showLoading('جاري إنشاء التصريح...');
+            
+            const today = new Date();
+            const nextMonth = new Date();
+            nextMonth.setMonth(nextMonth.getMonth() + 1);
+            
+            const authData = {
+                organizationName: 'منظمة الاختبار التجريبي',
+                scope: 'ALL',
+                validFrom: today.toISOString().split('T')[0],
+                validUntil: nextMonth.toISOString().split('T')[0],
+                signedBy: 'مدير النظام',
+                digitalSignature: 'AUTO-GENERATED-' + Date.now(),
+                allowedOperations: ['WEB_SCAN', 'NETWORK_SCAN', 'PHISHING_TEST', 'IP_SCAN']
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/authorizations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify(authData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showStatus(`
+                        ✅ تم إنشاء التصريح بنجاح!<br><br>
+                        <strong>معرف التصريح:</strong> ${data.data.authorizationId}<br>
+                        <strong>المنظمة:</strong> ${authData.organizationName}<br>
+                        <strong>الحالة:</strong> نشط (ACTIVE)<br>
+                        <strong>صالح حتى:</strong> ${new Date(nextMonth).toLocaleDateString('ar-SA')}<br><br>
+                        الآن يمكنك فحص أي موقع!
+                    `, 'success');
+                    
+                    document.getElementById('btnCreate').style.display = 'none';
+                    document.getElementById('btnGoToScan').style.display = 'block';
+                    
+                    return true;
+                } else {
+                    throw new Error(data.error || 'فشل إنشاء التصريح');
+                }
+            } catch (error) {
+                showStatus('❌ خطأ في إنشاء التصريح: ' + error.message, 'error');
+                return false;
+            }
+        }
+        
+        async function createAuthorization() {
+            const btn = document.getElementById('btnCreate');
+            btn.disabled = true;
+            
+            // الخطوة 1: تسجيل الدخول
+            const loginSuccess = await login();
+            if (!loginSuccess) {
+                btn.disabled = false;
+                return;
+            }
+            
+            // انتظار قصير
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // الخطوة 2: إنشاء التصريح
+            const authSuccess = await createAuthorizationRequest();
+            
+            if (!authSuccess) {
+                btn.disabled = false;
+            }
+        }
+        
+        function goToWebScan() {
+            window.open('http://localhost:3000/index.html#web-scan', '_blank');
+        }
+        
+        // تحقق من حالة الخادم عند التحميل
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('http://localhost:3000/');
+                if (response.ok) {
+                    showStatus('✅ الخادم يعمل بنجاح! اضغط الزر أدناه لإنشاء التصريح.', 'info');
+                }
+            } catch (error) {
+                showStatus('⚠️ تأكد من تشغيل الخادم أولاً باستخدام: تشغيل-النظام.bat', 'error');
+                document.getElementById('btnCreate').disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>

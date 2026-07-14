@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧪 اختبار الإصلاحات</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .test-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .test-card h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .test-section {
+            margin-bottom: 20px;
+        }
+        
+        .test-section h3 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .test-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .test-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .test-item code {
+            background: #1f2937;
+            color: #10b981;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-danger {
+            background: #ef4444;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+        
+        .status-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .status-box h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .status-icon {
+            font-size: 24px;
+            margin-left: 10px;
+        }
+        
+        .console-output {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+        }
+        
+        .console-output .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-right: 3px solid #3b82f6;
+            padding-right: 10px;
+        }
+        
+        .console-output .log-success {
+            border-right-color: #10b981;
+            color: #10b981;
+        }
+        
+        .console-output .log-error {
+            border-right-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .console-output .log-warning {
+            border-right-color: #f59e0b;
+            color: #f59e0b;
+        }
+        
+        .instructions {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+        
+        .instructions ol {
+            margin-right: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+            color: #78350f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 اختبار الإصلاحات</h1>
+            <p>تحقق من أن جميع الإصلاحات تعمل بشكل صحيح</p>
+        </div>
+
+        <div class="instructions">
+            <h3>⚠️ قبل البدء - يجب إعادة تشغيل السيرفر!</h3>
+            <ol>
+                <li><strong>أوقف السيرفر:</strong> <code>taskkill /F /IM node.exe</code></li>
+                <li><strong>ابدأ السيرفر:</strong> <code>npm start</code></li>
+                <li><strong>امسح الكاش:</strong> Ctrl + Shift + Delete</li>
+                <li><strong>أعد تحميل:</strong> Ctrl + F5</li>
+            </ol>
+        </div>
+
+        <div class="test-grid">
+            <!-- Test 1: Web Scanner -->
+            <div class="test-card">
+                <h2>🕷️ اختبار 1: Web Scanner</h2>
+                
+                <div class="test-section">
+                    <h3>📋 الخطوات:</h3>
+                    <div class="test-item">
+                        <strong>1. افتح النظام</strong>
+                        <a href="http://localhost:3000" target="_blank" class="btn">افتح النظام</a>
+                    </div>
+                    <div class="test-item">
+                        <strong>2. سجل دخول</strong>
+                        Username: <code>admin</code> | Password: <code>admin123</code>
+                    </div>
+                    <div class="test-item">
+                        <strong>3. اذهب إلى "فحص الويب"</strong>
+                    </div>
+                    <div class="test-item">
+                        <strong>4. جرب أحد المواقع:</strong><br>
+                        • <code>https://dvwa.co.uk</code><br>
+                        • <code>https://juice-shop.herokuapp.com</code>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h3>✅ النتيجة المتوقعة:</h3>
+                    <div class="status-box">
+                        <div class="status-item">
+                            <span class="status-icon">⏱️</span>
+                            <div>
+                                <strong>المدة:</strong> 30-120 ثانية<br>
+                                <small>(ليس 2-3 ثواني!)</small>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon">📄</span>
+                            <div>
+                                <strong>الصفحات:</strong> 10-50 صفحة<br>
+                                <small>(ليس 0!)</small>
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon">🐛</span>
+                            <div>
+                                <strong>الثغرات:</strong> أنواع متعددة<br>
+                                <small>(ليس فقط Security Headers!)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h3>🔍 ابحث في Console عن:</h3>
+                    <div class="console-output">
+                        <div class="log-entry log-success">🕷️ Crawler starting...</div>
+                        <div class="log-entry log-warning">⚠️ Skipping robots.txt (disabled)</div>
+                        <div class="log-entry log-success">📝 Added start URL to queue</div>
+                        <div class="log-entry log-success">📌 Added 20 common paths for better coverage</div>
+                        <div class="log-entry log-success">✓ Crawling completed: X pages discovered</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" onclick="testWebScanner()">🧪 اختبر الآن</button>
+            </div>
+
+            <!-- Test 2: Network Analyzer -->
+            <div class="test-card">
+                <h2>📡 اختبار 2: Network Analyzer</h2>
+                
+                <div class="test-section">
+                    <h3>📋 الخطوات:</h3>
+                    <div class="test-item">
+                        <strong>1. افتح النظام</strong>
+                        <a href="http://localhost:3000" target="_blank" class="btn">افتح النظام</a>
+                    </div>
+                    <div class="test-item">
+                        <strong>2. اذهب إلى "تحليل الشبكات"</strong>
+                    </div>
+                    <div class="test-item">
+                        <strong>3. املأ النموذج:</strong><br>
+                        • <strong>BSSID:</strong> <code>4a:1f:4c:46:18:2b</code><br>
+                        • <strong>SSID:</strong> <code>faraa net</code><br>
+                        • اختر تصريحاً نشطاً<br>
+                        • اختر نوع اختبار
+                    </div>
+                    <div class="test-item">
+                        <strong>4. اضغط "بدء التحليل"</strong>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h3>✅ النتيجة المتوقعة:</h3>
+                    <div class="status-box">
+                        <div class="status-item">
+                            <span class="status-icon">✅</span>
+                            <div>
+                                <strong>رسالة نجاح:</strong><br>
+                                "تم بدء تحليل الشبكة بنجاح!"
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon">🔄</span>
+                            <div>
+                                <strong>الانتقال:</strong><br>
+                                إلى صفحة Network
+                            </div>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-icon">❌</span>
+                            <div>
+                                <strong>لا أخطاء:</strong><br>
+                                في Console (F12)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h3>🔍 ابحث في Console عن:</h3>
+                    <div class="console-output">
+                        <div class="log-entry log-success">Creating network test: {</div>
+                        <div class="log-entry log-success">  target: {</div>
+                        <div class="log-entry log-success">    ssid: "faraa net",</div>
+                        <div class="log-entry log-success">    bssid: "4a:1f:4c:46:18:2b",</div>
+                        <div class="log-entry log-success">    authorizationId: "..."</div>
+                        <div class="log-entry log-success">  },</div>
+                        <div class="log-entry log-success">  config: { testTypes: [...] }</div>
+                        <div class="log-entry log-success">}</div>
+                    </div>
+                </div>
+
+                <button class="btn btn-success" onclick="testNetworkAnalyzer()">🧪 اختبر الآن</button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="test-card">
+            <h2>⚡ إجراءات سريعة</h2>
+            <div style="text-align: center; padding: 20px;">
+                <a href="http://localhost:3000" target="_blank" class="btn btn-success">🌐 افتح النظام</a>
+                <a href="public/clear-cache-and-test.html" target="_blank" class="btn">🧹 امسح الكاش</a>
+                <button class="btn btn-danger" onclick="checkServerStatus()">🔍 تحقق من السيرفر</button>
+                <button class="btn" onclick="openConsoleGuide()">📖 دليل Console</button>
+            </div>
+        </div>
+
+        <!-- Status Check -->
+        <div class="test-card">
+            <h2>📊 حالة النظام</h2>
+            <div id="status-container">
+                <p style="text-align: center; color: #666;">اضغط "تحقق من السيرفر" للفحص</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function testWebScanner() {
+            alert('🧪 اختبار Web Scanner:\n\n' +
+                  '1. افتح http://localhost:3000\n' +
+                  '2. سجل دخول (admin / admin123)\n' +
+                  '3. اذهب إلى "فحص الويب"\n' +
+                  '4. جرب: https://dvwa.co.uk\n' +
+                  '5. افتح Console (F12) لمراقبة السجلات\n\n' +
+                  'النتيجة المتوقعة:\n' +
+                  '• المدة: 30-120 ثانية\n' +
+                  '• الصفحات: 10-50 صفحة\n' +
+                  '• الثغرات: أنواع متعددة');
+            
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        function testNetworkAnalyzer() {
+            alert('🧪 اختبار Network Analyzer:\n\n' +
+                  '1. افتح http://localhost:3000\n' +
+                  '2. اذهب إلى "تحليل الشبكات"\n' +
+                  '3. املأ النموذج:\n' +
+                  '   • BSSID: 4a:1f:4c:46:18:2b\n' +
+                  '   • SSID: faraa net\n' +
+                  '   • اختر تصريحاً نشطاً\n' +
+                  '4. اضغط "بدء التحليل"\n' +
+                  '5. افتح Console (F12) للتحقق\n\n' +
+                  'النتيجة المتوقعة:\n' +
+                  '• رسالة نجاح\n' +
+                  '• لا أخطاء في Console');
+            
+            window.open('http://localhost:3000', '_blank');
+        }
+
+        async function checkServerStatus() {
+            const container = document.getElementById('status-container');
+            container.innerHTML = '<p style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> جاري الفحص...</p>';
+
+            try {
+                const response = await fetch('http://localhost:3000/api/v1/auth/health', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    container.innerHTML = `
+                        <div class="status-box" style="background: #f0fdf4; border-color: #10b981;">
+                            <h3 style="color: #065f46;">✅ السيرفر يعمل بشكل صحيح!</h3>
+                            <div class="status-item">
+                                <span class="status-icon">🟢</span>
+                                <div>
+                                    <strong>الحالة:</strong> متصل<br>
+                                    <strong>URL:</strong> http://localhost:3000
+                                </div>
+                            </div>
+                            <p style="margin-top: 15px; color: #065f46;">
+                                ✅ يمكنك الآن اختبار الإصلاحات!
+                            </p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error('Server returned error: ' + response.status);
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="status-box" style="background: #fef2f2; border-color: #ef4444;">
+                        <h3 style="color: #991b1b;">❌ السيرفر لا يعمل!</h3>
+                        <div class="status-item">
+                            <span class="status-icon">🔴</span>
+                            <div>
+                                <strong>الخطأ:</strong> ${error.message}<br>
+                                <strong>الحل:</strong> ابدأ السيرفر بـ <code>npm start</code>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px;">
+                            <strong>خطوات إعادة التشغيل:</strong>
+                            <ol style="margin-right: 20px; margin-top: 10px;">
+                                <li>افتح CMD</li>
+                                <li>اكتب: <code>taskkill /F /IM node.exe</code></li>
+                                <li>اكتب: <code>npm start</code></li>
+                                <li>انتظر حتى ترى: "Server running on http://localhost:3000"</li>
+                            </ol>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function openConsoleGuide() {
+            const guide = `
+📖 دليل استخدام Console (F12)
+
+1. افتح Console:
+   • اضغط F12
+   • أو انقر بزر الماوس الأيمن > Inspect > Console
+
+2. ابحث عن الرسائل:
+   • Web Scanner: "🕷️ Crawler starting"
+   • Network Analyzer: "Creating network test"
+
+3. تحقق من الأخطاء:
+   • الأخطاء تظهر باللون الأحمر
+   • التحذيرات تظهر باللون الأصفر
+   • النجاح يظهر باللون الأخضر
+
+4. نصائح:
+   • امسح Console قبل كل اختبار (أيقونة 🚫)
+   • استخدم Filter للبحث عن كلمات محددة
+   • انسخ الأخطاء إذا احتجت مساعدة
+            `;
+            
+            alert(guide);
+        }
+
+        // Auto-check on load
+        window.addEventListener('load', () => {
+            setTimeout(checkServerStatus, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "id": "web-scan-2024",
+  "user_id": "admin",
+  "organization_name": "منصة اختبار الاختراق",
+  "valid_from": "2024-01-01",
+  "valid_until": "2027-12-31",
+  "signed_by": "مدير الأمن السيبراني",
+  "digital_signature": "SIGNATURE-1778595238245",
+  "document_path": "/uploads/authorizations/web-scan-2024.pdf",
+  "status": "ACTIVE",
+  "allowed_operations": [
+    "WEB_SCAN",
+    "ALL"
+  ],
+  "created_at": "2026-05-12T14:13:58.245Z"
+}

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تحليل الشبكة</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .btn-secondary {
+            background: #2196F3;
+        }
+        .btn-secondary:hover {
+            background: #0b7dda;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌐 اختبار تحليل الشبكة</h1>
+        
+        <div class="form-group">
+            <label>1️⃣ أولاً: إنشاء تصريح</label>
+            <button class="btn-secondary" onclick="createAuthorization()">إنشاء تصريح تجريبي</button>
+        </div>
+
+        <div class="form-group">
+            <label>2️⃣ ثانياً: اختر التصريح</label>
+            <select id="authSelect">
+                <option value="">جاري التحميل...</option>
+            </select>
+            <button class="btn-secondary" onclick="loadAuthorizations()">تحديث القائمة</button>
+        </div>
+
+        <div class="form-group">
+            <label>3️⃣ ثالثاً: أدخل بيانات الشبكة</label>
+            <input type="text" id="ssid" placeholder="SSID (اسم الشبكة)" value="TestNetwork">
+            <input type="text" id="bssid" placeholder="BSSID (عنوان MAC)" value="00:11:22:33:44:55" style="margin-top: 10px;">
+        </div>
+
+        <button onclick="testNetworkAnalysis()">🚀 بدء تحليل الشبكة</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3001/api/v1';
+
+        // تحميل التصاريح عند فتح الصفحة
+        window.onload = () => {
+            loadAuthorizations();
+        };
+
+        async function createAuthorization() {
+            try {
+                const authData = {
+                    organizationName: 'شركة الاختبار',
+                    scope: 'NETWORK_TEST',
+                    validFrom: new Date().toISOString(),
+                    validUntil: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+                    signedBy: 'مدير الأمن',
+                    digitalSignature: 'TEST_SIGNATURE_' + Date.now(),
+                    allowedOperations: ['NETWORK_TEST', 'ALL']
+                };
+
+                const response = await fetch(`${API_BASE}/authorizations`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(authData)
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    showResult('✅ تم إنشاء التصريح بنجاح!', 'success');
+                    await loadAuthorizations();
+                } else {
+                    showResult('❌ فشل إنشاء التصريح: ' + (result.error?.message || 'خطأ غير معروف'), 'error');
+                }
+            } catch (error) {
+                showResult('❌ خطأ: ' + error.message, 'error');
+            }
+        }
+
+        async function loadAuthorizations() {
+            try {
+                const response = await fetch(`${API_BASE}/authorizations`);
+                const result = await response.json();
+                
+                const select = document.getElementById('authSelect');
+                
+                if (result.success && result.data.authorizations) {
+                    const activeAuths = result.data.authorizations.filter(auth => {
+                        const allowedOps = auth.allowed_operations || auth.allowedOperations || [];
+                        return auth.status === 'ACTIVE' && 
+                               (allowedOps.includes('NETWORK_TEST') || allowedOps.includes('ALL'));
+                    });
+                    
+                    if (activeAuths.length > 0) {
+                        select.innerHTML = '<option value="">اختر تصريحاً...</option>' +
+                            activeAuths.map(auth => {
+                                const orgName = auth.organization_name || auth.organizationName;
+                                return `<option value="${auth.id}">${orgName}</option>`;
+                            }).join('');
+                    } else {
+                        select.innerHTML = '<option value="">لا توجد تصاريح نشطة</option>';
+                    }
+                } else {
+                    select.innerHTML = '<option value="">فشل تحميل التصاريح</option>';
+                }
+            } catch (error) {
+                console.error('Error loading authorizations:', error);
+                document.getElementById('authSelect').innerHTML = '<option value="">خطأ في التحميل</option>';
+            }
+        }
+
+        async function testNetworkAnalysis() {
+            const authId = document.getElementById('authSelect').value;
+            const ssid = document.getElementById('ssid').value;
+            const bssid = document.getElementById('bssid').value;
+
+            if (!authId) {
+                showResult('❌ يجب اختيار تصريح أولاً', 'error');
+                return;
+            }
+
+            if (!bssid) {
+                showResult('❌ يجب إدخال BSSID', 'error');
+                return;
+            }
+
+            const data = {
+                target: {
+                    ssid: ssid || 'Unknown Network',
+                    bssid: bssid,
+                    authorizationId: authId
+                },
+                config: {
+                    testTypes: ['WEP_CRACK', 'TRAFFIC_ANALYSIS']
+                }
+            };
+
+            try {
+                console.log('Sending request:', data);
+                
+                const response = await fetch(`${API_BASE}/network/tests`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+                console.log('Response:', result);
+
+                if (result.success) {
+                    showResult(`✅ تم بدء تحليل الشبكة بنجاح!\n\nمعرف الاختبار: ${result.data.id}\n\nالحالة: ${result.data.status}`, 'success');
+                    
+                    // عرض تفاصيل الاستجابة
+                    const pre = document.createElement('pre');
+                    pre.textContent = JSON.stringify(result, null, 2);
+                    document.getElementById('result').appendChild(pre);
+                } else {
+                    showResult('❌ فشل بدء التحليل: ' + (result.error?.message || 'خطأ غير معروف'), 'error');
+                }
+            } catch (error) {
+                showResult('❌ خطأ في الاتصال: ' + error.message, 'error');
+                console.error('Error:', error);
+            }
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = type;
+            resultDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

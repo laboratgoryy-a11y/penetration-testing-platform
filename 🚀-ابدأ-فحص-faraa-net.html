@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 فحص شبكة faraa net</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .network-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .network-info h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        
+        .label {
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .value {
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .steps {
+            margin: 30px 0;
+        }
+        
+        .step {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-right: 4px solid #28a745;
+        }
+        
+        .step h4 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .step p {
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .alert-info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        .loading i {
+            font-size: 3em;
+            color: #667eea;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 فحص شبكة faraa net</h1>
+            <p>نظام تحليل الشبكات اللاسلكية</p>
+        </div>
+
+        <div class="network-info">
+            <h3>📡 معلومات شبكتك</h3>
+            <div class="info-row">
+                <span class="label">الاسم (SSID):</span>
+                <span class="value">faraa net</span>
+            </div>
+            <div class="info-row">
+                <span class="label">عنوان MAC:</span>
+                <span class="value">4a:1f:4c:46:18:2b</span>
+            </div>
+            <div class="info-row">
+                <span class="label">التشفير:</span>
+                <span class="value">WPA2/WPA3-Personal ✅</span>
+            </div>
+            <div class="info-row">
+                <span class="label">عنوان IP:</span>
+                <span class="value">192.168.0.100</span>
+            </div>
+            <div class="info-row">
+                <span class="label">البوابة:</span>
+                <span class="value">192.168.0.1</span>
+            </div>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <h4>1️⃣ تسجيل الدخول</h4>
+                <p>أولاً، يجب تسجيل الدخول إلى النظام كمستخدم <code>admin</code></p>
+            </div>
+
+            <div class="step">
+                <h4>2️⃣ إنشاء تصريح</h4>
+                <p>بعد تسجيل الدخول، سننشئ تصريحاً لفحص شبكتك</p>
+            </div>
+
+            <div class="step">
+                <h4>3️⃣ بدء الفحص</h4>
+                <p>ثم نبدأ فحص الشبكة ونشاهد النتائج</p>
+            </div>
+        </div>
+
+        <button class="btn" onclick="checkLogin()">
+            🚀 ابدأ الآن
+        </button>
+
+        <div id="loading" class="loading">
+            <div style="font-size: 3em;">⏳</div>
+            <p>جاري التحقق...</p>
+        </div>
+
+        <div id="alert" class="alert"></div>
+    </div>
+
+    <script>
+        async function checkLogin() {
+            const loading = document.getElementById('loading');
+            const alert = document.getElementById('alert');
+            
+            loading.style.display = 'block';
+            alert.style.display = 'none';
+
+            try {
+                // التحقق من تسجيل الدخول
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    // المستخدم غير مسجل دخول
+                    loading.style.display = 'none';
+                    alert.className = 'alert alert-warning';
+                    alert.style.display = 'block';
+                    alert.innerHTML = `
+                        <strong>⚠️ يجب تسجيل الدخول أولاً</strong>
+                        <p style="margin-top: 10px;">
+                            سيتم توجيهك إلى صفحة تسجيل الدخول...
+                        </p>
+                    `;
+                    
+                    setTimeout(() => {
+                        window.location.href = '/login.html?redirect=' + encodeURIComponent('/test-network-analyzer.html');
+                    }, 2000);
+                    return;
+                }
+
+                // المستخدم مسجل دخول - التوجيه إلى صفحة الفحص
+                loading.style.display = 'none';
+                alert.className = 'alert alert-success';
+                alert.style.display = 'block';
+                alert.innerHTML = `
+                    <strong>✅ تم التحقق بنجاح!</strong>
+                    <p style="margin-top: 10px;">
+                        سيتم توجيهك إلى صفحة الفحص...
+                    </p>
+                    <p style="margin-top: 10px; font-size: 14px;">
+                        <strong>بيانات شبكتك:</strong><br>
+                        SSID: <code>faraa net</code><br>
+                        BSSID: <code>4a:1f:4c:46:18:2b</code>
+                    </p>
+                `;
+                
+                setTimeout(() => {
+                    window.location.href = '/test-network-analyzer.html';
+                }, 2000);
+
+            } catch (error) {
+                loading.style.display = 'none';
+                alert.className = 'alert alert-warning';
+                alert.style.display = 'block';
+                alert.innerHTML = `
+                    <strong>⚠️ خطأ</strong>
+                    <p style="margin-top: 10px;">${error.message}</p>
+                `;
+            }
+        }
+
+        // التحقق التلقائي عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                document.querySelector('.btn').innerHTML = '✅ أنت مسجل دخول - انتقل للفحص';
+            } else {
+                document.querySelector('.btn').innerHTML = '🔐 تسجيل الدخول أولاً';
+            }
+        });
+    </script>
+</body>
+</html>

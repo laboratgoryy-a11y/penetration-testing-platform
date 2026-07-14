@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة اختبار الاختراق - ابدأ هنا</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 800px;
+            width: 100%;
+            padding: 40px;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .status {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .status h2 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+        
+        .status p {
+            color: #155724;
+            font-size: 1.1em;
+        }
+        
+        .links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .link-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-decoration: none;
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .link-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .link-card h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .link-card p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .credentials {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .credentials h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+        
+        .cred-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+        }
+        
+        .cred-label {
+            font-weight: bold;
+            color: #856404;
+        }
+        
+        .cred-value {
+            color: #333;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .features {
+            margin-bottom: 30px;
+        }
+        
+        .features h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .feature-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            border-right: 4px solid #667eea;
+        }
+        
+        .feature-item.new {
+            border-right-color: #28a745;
+            background: #d4edda;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+        
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+        }
+        
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 10px;
+        }
+        
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .action-buttons {
+            text-align: center;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 منصة اختبار الاختراق</h1>
+        <p class="subtitle">النظام جاهز للعمل بالكامل!</p>
+        
+        <div class="status">
+            <h2>✅ النظام يعمل الآن</h2>
+            <p>الخادم يعمل على: <strong>http://localhost:3001</strong></p>
+        </div>
+        
+        <div class="action-buttons">
+            <a href="http://localhost:3001/login.html" class="btn-primary" target="_blank">
+                🚀 ابدأ الآن
+            </a>
+        </div>
+        
+        <div class="credentials">
+            <h3>🔐 بيانات الدخول</h3>
+            <div class="cred-item">
+                <span class="cred-label">اسم المستخدم:</span>
+                <span class="cred-value">admin</span>
+            </div>
+            <div class="cred-item">
+                <span class="cred-label">كلمة المرور:</span>
+                <span class="cred-value">password</span>
+            </div>
+        </div>
+        
+        <div class="links">
+            <a href="http://localhost:3001/login.html" class="link-card" target="_blank">
+                <h3>🔐 تسجيل الدخول</h3>
+                <p>ابدأ باستخدام النظام</p>
+            </a>
+            
+            <a href="http://localhost:3001/index.html" class="link-card" target="_blank">
+                <h3>🏠 الواجهة الرئيسية</h3>
+                <p>لوحة التحكم</p>
+            </a>
+            
+            <a href="http://localhost:3001/ip-scanner.html" class="link-card" target="_blank">
+                <h3>🔍 فحص IP</h3>
+                <p>فحص الشبكات والأجهزة</p>
+            </a>
+            
+            <a href="دليل-التشغيل-الكامل.md" class="link-card">
+                <h3>📖 الدليل الشامل</h3>
+                <p>تعليمات مفصلة</p>
+            </a>
+        </div>
+        
+        <div class="features">
+            <h3>🎯 الميزات المتاحة</h3>
+            <div class="feature-list">
+                <div class="feature-item">✅ فحص المواقع (Web Scanner)</div>
+                <div class="feature-item new">
+                    <span class="badge">جديد</span>
+                    فحص IP (7 أنواع)
+                </div>
+                <div class="feature-item new">
+                    <span class="badge">جديد</span>
+                    NSE Scripts (20 سكريبت)
+                </div>
+                <div class="feature-item new">
+                    <span class="badge">جديد</span>
+                    تجاوز Firewall (8 تقنيات)
+                </div>
+                <div class="feature-item">✅ تحليل الشبكات</div>
+                <div class="feature-item">✅ حملات التصيد</div>
+                <div class="feature-item">✅ نظام التصاريح</div>
+                <div class="feature-item">✅ التقارير (PDF, HTML)</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>ملاحظة:</strong> هذا نظام تعليمي. استخدمه فقط على الأنظمة التي لديك تصريح باختبارها.</p>
+            <p style="margin-top: 10px;">تاريخ الإنجاز: 27 يناير 2026</p>
+        </div>
+    </div>
+    
+    <script>
+        // تحقق من أن الخادم يعمل
+        fetch('http://localhost:3001/')
+            .then(response => {
+                if (response.ok) {
+                    console.log('✅ الخادم يعمل بنجاح');
+                }
+            })
+            .catch(error => {
+                console.warn('⚠️ تأكد من تشغيل الخادم باستخدام: تشغيل-النظام.bat');
+                alert('⚠️ يبدو أن الخادم غير مشغل!\n\nالرجاء تشغيل الملف: تشغيل-النظام.bat');
+            });
+    </script>
+</body>
+</html>

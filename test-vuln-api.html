@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>اختبار API الثغرات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 اختبار API الثغرات</h1>
+        
+        <div>
+            <button onclick="testLatestScan()">1. اختبار آخر فحص</button>
+            <button onclick="testSpecificScan()">2. اختبار فحص محدد</button>
+            <button onclick="testAllScans()">3. عرض جميع الفحوصات</button>
+        </div>
+        
+        <div>
+            <label>معرف الفحص:</label>
+            <input type="text" id="scanId" value="scan-1769562632172" style="width: 300px; padding: 5px;">
+        </div>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3001/api/v1';
+        
+        function log(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            const className = type === 'error' ? 'result error' : type === 'success' ? 'result success' : 'result';
+            resultDiv.className = className;
+            resultDiv.textContent = message;
+        }
+
+        async function testLatestScan() {
+            try {
+                log('جاري تحميل آخر فحص...');
+                
+                // 1. الحصول على جميع الفحوصات
+                const scansResponse = await fetch(`${API_URL}/scans/web`);
+                const scansData = await scansResponse.json();
+                
+                console.log('Scans response:', scansData);
+                
+                if (!scansData.success || !scansData.data.scans || scansData.data.scans.length === 0) {
+                    log('❌ لا توجد فحوصات', 'error');
+                    return;
+                }
+                
+                const latestScan = scansData.data.scans[0];
+                log(`✅ آخر فحص: ${latestScan.id}\n\nالهدف: ${latestScan.target_url}\nالحالة: ${latestScan.status}\nالصفحات: ${latestScan.total_requests}\nالثغرات: ${latestScan.total_vulnerabilities}`, 'success');
+                
+                // 2. تحميل الثغرات
+                setTimeout(() => testVulnerabilities(latestScan.id), 1000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        async function testSpecificScan() {
+            const scanId = document.getElementById('scanId').value;
+            if (!scanId) {
+                log('❌ يرجى إدخال معرف الفحص', 'error');
+                return;
+            }
+            
+            await testVulnerabilities(scanId);
+        }
+
+        async function testVulnerabilities(scanId) {
+            try {
+                log(`جاري تحميل الثغرات للفحص: ${scanId}...`);
+                
+                const response = await fetch(`${API_URL}/scans/web/${scanId}/vulnerabilities`);
+                const data = await response.json();
+                
+                console.log('Vulnerabilities response:', data);
+                
+                if (!data.success) {
+                    log(`❌ فشل: ${data.error || 'خطأ غير معروف'}`, 'error');
+                    return;
+                }
+                
+                const vulns = data.data || [];
+                
+                let output = `✅ تم العثور على ${vulns.length} ثغرة\n\n`;
+                output += `Response structure:\n`;
+                output += `- success: ${data.success}\n`;
+                output += `- data: Array(${vulns.length})\n\n`;
+                
+                if (vulns.length > 0) {
+                    output += `الثغرات:\n`;
+                    output += `${'='.repeat(50)}\n\n`;
+                    
+                    vulns.forEach((v, i) => {
+                        output += `${i + 1}. ${v.type} (${v.severity})\n`;
+                        output += `   ID: ${v.id}\n`;
+                        output += `   Scan ID: ${v.scan_session_id}\n`;
+                        output += `   Location: ${v.location}\n`;
+                        output += `   Description: ${v.description}\n`;
+                        if (v.cvss_score) output += `   CVSS: ${v.cvss_score}\n`;
+                        output += `\n`;
+                    });
+                    
+                    // عرض JSON الكامل
+                    output += `\n${'='.repeat(50)}\n`;
+                    output += `JSON Response:\n`;
+                    output += JSON.stringify(data, null, 2);
+                } else {
+                    output += '⚠️ لا توجد ثغرات لهذا الفحص';
+                }
+                
+                log(output, 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        async function testAllScans() {
+            try {
+                log('جاري تحميل جميع الفحوصات...');
+                
+                const response = await fetch(`${API_URL}/scans/web`);
+                const data = await response.json();
+                
+                console.log('All scans:', data);
+                
+                if (!data.success) {
+                    log(`❌ فشل: ${data.error || 'خطأ غير معروف'}`, 'error');
+                    return;
+                }
+                
+                const scans = data.data.scans || [];
+                
+                let output = `✅ تم العثور على ${scans.length} فحص\n\n`;
+                
+                scans.forEach((scan, i) => {
+                    output += `${i + 1}. ${scan.id}\n`;
+                    output += `   الهدف: ${scan.target_url}\n`;
+                    output += `   الحالة: ${scan.status}\n`;
+                    output += `   الصفحات: ${scan.total_requests || 0}\n`;
+                    output += `   الثغرات: ${scan.total_vulnerabilities || 0}\n`;
+                    output += `   التاريخ: ${new Date(scan.created_at).toLocaleString('ar-SA')}\n`;
+                    output += `\n`;
+                });
+                
+                log(output, 'success');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                log(`❌ خطأ: ${error.message}`, 'error');
+            }
+        }
+
+        // تحميل تلقائي عند فتح الصفحة
+        window.addEventListener('load', () => {
+            testLatestScan();
+        });
+    </script>
+</body>
+</html>

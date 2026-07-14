@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار عرض الثغرات</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+        }
+        .test-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار عرض الثغرات المكتشفة</h1>
+        
+        <div class="test-section">
+            <div class="test-title">
+                <i class="fas fa-info-circle"></i> معلومات الاختبار
+            </div>
+            <p>هذا الملف يختبر عرض الثغرات بنفس الطريقة المستخدمة في النظام الفعلي.</p>
+            <p>يجب أن ترى:</p>
+            <ul>
+                <li>✅ العداد الرقمي (4 مربعات: حرجة، عالية، متوسطة، منخفضة)</li>
+                <li>✅ قائمة تفصيلية أسفل العداد مباشرة</li>
+                <li>✅ كل ثغرة تعرض: الرقم، الاسم، النوع، المكان، الخطورة، الوصف</li>
+            </ul>
+        </div>
+
+        <div id="scan-results">
+            <h3 style="margin-bottom: 15px;">
+                <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                نتائج الفحص
+            </h3>
+            <div id="scan-results-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // بيانات تجريبية للثغرات
+        const vulnerabilities = [
+            {
+                type: 'SQL_INJECTION',
+                severity: 'CRITICAL',
+                location: 'https://example.com/login.php?id=1',
+                description: 'تم اكتشاف ثغرة حقن SQL في معامل id. يمكن للمهاجم استخراج بيانات قاعدة البيانات.',
+                cvss_score: 9.8
+            },
+            {
+                type: 'XSS',
+                severity: 'HIGH',
+                location: 'https://example.com/search.php?q=test',
+                description: 'تم اكتشاف ثغرة XSS في معامل البحث. يمكن للمهاجم تنفيذ كود JavaScript.',
+                cvss_score: 7.5
+            },
+            {
+                type: 'CSRF',
+                severity: 'MEDIUM',
+                location: 'https://example.com/profile/update',
+                description: 'لا يوجد حماية CSRF في نموذج تحديث الملف الشخصي.',
+                cvss_score: 5.4
+            },
+            {
+                type: 'DIRECTORY_TRAVERSAL',
+                severity: 'LOW',
+                location: 'https://example.com/download.php?file=test.pdf',
+                description: 'يمكن الوصول إلى ملفات خارج المجلد المحدد.',
+                cvss_score: 3.7
+            }
+        ];
+
+        // دوال الترجمة
+        function translateVulnType(type) {
+            const translations = {
+                'SQL_INJECTION': 'حقن SQL',
+                'XSS': 'البرمجة النصية عبر المواقع',
+                'CSRF': 'تزوير الطلبات عبر المواقع',
+                'DIRECTORY_TRAVERSAL': 'اجتياز الدليل',
+                'COMMAND_INJECTION': 'حقن الأوامر'
+            };
+            return translations[type] || type;
+        }
+
+        function translateSeverity(severity) {
+            const translations = {
+                'CRITICAL': 'حرجة',
+                'HIGH': 'عالية',
+                'MEDIUM': 'متوسطة',
+                'LOW': 'منخفضة'
+            };
+            return translations[severity] || severity;
+        }
+
+        // حساب عدد الثغرات حسب الخطورة
+        const severityCounts = {
+            CRITICAL: vulnerabilities.filter(v => v.severity === 'CRITICAL').length,
+            HIGH: vulnerabilities.filter(v => v.severity === 'HIGH').length,
+            MEDIUM: vulnerabilities.filter(v => v.severity === 'MEDIUM').length,
+            LOW: vulnerabilities.filter(v => v.severity === 'LOW').length
+        };
+
+        // عرض النتائج
+        const resultsContent = document.getElementById('scan-results-content');
+        resultsContent.innerHTML = `
+            <!-- العداد الرقمي -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 20px;">
+                <div style="background: #fef2f2; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #dc2626;">${severityCounts.CRITICAL}</div>
+                    <div style="color: #666; font-size: 12px;">حرجة</div>
+                </div>
+                <div style="background: #fef3c7; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #f59e0b;">${severityCounts.HIGH}</div>
+                    <div style="color: #666; font-size: 12px;">عالية</div>
+                </div>
+                <div style="background: #fef9c3; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #eab308;">${severityCounts.MEDIUM}</div>
+                    <div style="color: #666; font-size: 12px;">متوسطة</div>
+                </div>
+                <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 24px; font-weight: bold; color: #3b82f6;">${severityCounts.LOW}</div>
+                    <div style="color: #666; font-size: 12px;">منخفضة</div>
+                </div>
+            </div>
+            
+            <!-- القائمة التفصيلية -->
+            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 15px; border: 2px solid #e5e7eb;">
+                <h4 style="margin: 0 0 15px 0; color: #111827; font-size: 18px; border-bottom: 3px solid #3b82f6; padding-bottom: 10px; font-weight: bold;">
+                    <i class="fas fa-bug" style="color: #3b82f6;"></i> قائمة الثغرات المكتشفة (${vulnerabilities.length} ثغرة)
+                </h4>
+                <div style="max-height: 500px; overflow-y: auto; padding-left: 5px;">
+                    ${vulnerabilities.map((v, i) => `
+                        <div style="background: white; padding: 15px; margin-bottom: 12px; border-radius: 8px; border-right: 5px solid ${
+                            v.severity === 'CRITICAL' ? '#dc2626' :
+                            v.severity === 'HIGH' ? '#f59e0b' :
+                            v.severity === 'MEDIUM' ? '#eab308' : '#3b82f6'
+                        }; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <!-- رأس الثغرة -->
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                                <div style="flex: 1;">
+                                    <div style="font-size: 15px; font-weight: bold; color: #111827; margin-bottom: 5px;">
+                                        <span style="background: #e5e7eb; color: #374151; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px;">#${i + 1}</span>
+                                        ${v.type.replace(/_/g, ' ')}
+                                    </div>
+                                    <div style="font-size: 13px; color: #6b7280; margin-top: 5px;">
+                                        <i class="fas fa-tag" style="color: #3b82f6;"></i> <strong>النوع:</strong> ${translateVulnType(v.type)}
+                                    </div>
+                                </div>
+                                <span style="background: ${
+                                    v.severity === 'CRITICAL' ? '#fef2f2' :
+                                    v.severity === 'HIGH' ? '#fef3c7' :
+                                    v.severity === 'MEDIUM' ? '#fef9c3' : '#f0f9ff'
+                                }; color: ${
+                                    v.severity === 'CRITICAL' ? '#dc2626' :
+                                    v.severity === 'HIGH' ? '#f59e0b' :
+                                    v.severity === 'MEDIUM' ? '#eab308' : '#3b82f6'
+                                }; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: bold; white-space: nowrap; border: 2px solid ${
+                                    v.severity === 'CRITICAL' ? '#dc2626' :
+                                    v.severity === 'HIGH' ? '#f59e0b' :
+                                    v.severity === 'MEDIUM' ? '#eab308' : '#3b82f6'
+                                };">
+                                    ${translateSeverity(v.severity)}
+                                </span>
+                            </div>
+                            
+                            <!-- المكان -->
+                            <div style="background: #f9fafb; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-right: 3px solid #3b82f6;">
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px; font-weight: bold;">
+                                    <i class="fas fa-map-marker-alt" style="color: #3b82f6;"></i> المكان في الموقع:
+                                </div>
+                                <div style="font-size: 13px; color: #111827; word-break: break-all; font-family: 'Courier New', monospace; background: white; padding: 8px; border-radius: 4px;">
+                                    ${v.location}
+                                </div>
+                            </div>
+                            
+                            <!-- الوصف -->
+                            <div style="margin-bottom: 10px;">
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px; font-weight: bold;">
+                                    <i class="fas fa-info-circle" style="color: #3b82f6;"></i> الوصف التفصيلي:
+                                </div>
+                                <div style="font-size: 13px; color: #374151; line-height: 1.6; background: #f9fafb; padding: 10px; border-radius: 4px;">
+                                    ${v.description}
+                                </div>
+                            </div>
+                            
+                            ${v.cvss_score ? `
+                                <div style="display: inline-block; background: #f0f9ff; color: #1e40af; padding: 6px 12px; border-radius: 12px; font-size: 12px; font-weight: bold; border: 1px solid #3b82f6;">
+                                    <i class="fas fa-chart-line"></i> CVSS Score: ${v.cvss_score}
+                                </div>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="margin-top: 15px; padding: 10px; background: #f0f9ff; border-radius: 6px; text-align: center; border: 1px solid #3b82f6;">
+                    <i class="fas fa-info-circle" style="color: #3b82f6;"></i>
+                    <span style="color: #1e40af; font-size: 13px;">
+                        تم عرض جميع الثغرات المكتشفة (${vulnerabilities.length}) بالتفصيل أعلاه
+                    </span>
+                </div>
+            </div>
+        `;
+
+        console.log('✅ تم عرض النتائج بنجاح!');
+        console.log('📊 عدد الثغرات:', vulnerabilities.length);
+        console.log('📊 التوزيع:', severityCounts);
+    </script>
+</body>
+</html>

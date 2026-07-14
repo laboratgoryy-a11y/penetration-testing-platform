@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار تسجيل الدخول</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+        }
+        h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test-case {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-right: 4px solid #667eea;
+        }
+        .test-case h3 {
+            margin-top: 0;
+            color: #667eea;
+        }
+        .credentials {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .feature {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
+        .feature i {
+            color: #28a745;
+            margin-left: 10px;
+            font-size: 20px;
+        }
+        ul {
+            line-height: 1.8;
+        }
+        .warning {
+            background: #fff3cd;
+            border-right: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <h1>🔐 اختبار واجهة تسجيل الدخول المحسّنة</h1>
+
+    <div class="card">
+        <h2>🚀 الوصول السريع</h2>
+        <div style="text-align: center;">
+            <a href="http://localhost:3000/login.html" class="btn" target="_blank">
+                <i class="fas fa-sign-in-alt"></i> فتح صفحة تسجيل الدخول
+            </a>
+            <a href="http://localhost:3000/index.html" class="btn" target="_blank">
+                <i class="fas fa-home"></i> لوحة التحكم
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>✨ الميزات الجديدة</h2>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>تصميم احترافي وعصري مع ألوان متدرجة</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>التحقق الفوري من صحة الإدخال (Real-time Validation)</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>رسائل خطأ واضحة ومحددة لكل حقل</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>إخفاء/إظهار كلمة المرور</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>دعم المصادقة الثنائية (MFA)</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>تسجيل الدخول عبر Google و Facebook</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>تصميم متجاوب (يعمل على جميع الأجهزة)</span>
+        </div>
+        <div class="feature">
+            <i class="fas fa-check-circle"></i>
+            <span>رسوم متحركة سلسة</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>🧪 حالات الاختبار</h2>
+
+        <div class="test-case">
+            <h3>1️⃣ تسجيل دخول عادي (ناجح)</h3>
+            <div class="credentials">
+                <strong>اسم المستخدم:</strong> admin<br>
+                <strong>كلمة المرور:</strong> 123456
+            </div>
+            <p><strong>النتيجة المتوقعة:</strong> تسجيل دخول ناجح وتوجيه إلى لوحة التحكم</p>
+        </div>
+
+        <div class="test-case">
+            <h3>2️⃣ تسجيل دخول مع MFA</h3>
+            <div class="credentials">
+                <strong>اسم المستخدم:</strong> admin-mfa<br>
+                <strong>كلمة المرور:</strong> 123456<br>
+                <strong>رمز MFA:</strong> 123456
+            </div>
+            <p><strong>النتيجة المتوقعة:</strong> يظهر حقل MFA، ثم تسجيل دخول ناجح</p>
+        </div>
+
+        <div class="test-case">
+            <h3>3️⃣ اختبار التحقق من الأخطاء</h3>
+            <div class="credentials">
+                <strong>اسم المستخدم:</strong> ab (أقل من 3 أحرف)<br>
+                <strong>كلمة المرور:</strong> 123 (أقل من 6 أحرف)
+            </div>
+            <p><strong>النتيجة المتوقعة:</strong> رسائل خطأ واضحة وتلوين الحقول بالأحمر</p>
+        </div>
+
+        <div class="test-case">
+            <h3>4️⃣ اختبار إخفاء/إظهار كلمة المرور</h3>
+            <p>اضغط على أيقونة العين بجانب حقل كلمة المرور</p>
+            <p><strong>النتيجة المتوقعة:</strong> تتحول كلمة المرور من مخفية إلى ظاهرة والعكس</p>
+        </div>
+
+        <div class="test-case">
+            <h3>5️⃣ اختبار تسجيل الدخول الاجتماعي</h3>
+            <p>اضغط على زر Google أو Facebook</p>
+            <p><strong>النتيجة المتوقعة:</strong> رسالة توضح أن الميزة قيد التطوير</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>📱 اختبار التجاوب</h2>
+        <ul>
+            <li>افتح صفحة تسجيل الدخول</li>
+            <li>اضغط F12 لفتح Developer Tools</li>
+            <li>اضغط على أيقونة الموبايل (Toggle Device Toolbar)</li>
+            <li>جرب أحجام شاشة مختلفة:
+                <ul>
+                    <li>iPhone SE (375px)</li>
+                    <li>iPad (768px)</li>
+                    <li>Desktop (1920px)</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>🎨 اختبار التصميم</h2>
+        <ul>
+            <li><strong>الخلفية:</strong> تدرج لوني من البنفسجي إلى الأرجواني</li>
+            <li><strong>البطاقة:</strong> بيضاء مع ظلال ثلاثية الأبعاد</li>
+            <li><strong>الحقول:</strong> تتلون بالأخضر عند الصحة والأحمر عند الخطأ</li>
+            <li><strong>الأزرار:</strong> تتحرك للأعلى عند التمرير عليها</li>
+            <li><strong>الرسوم المتحركة:</strong> سلسة وسريعة</li>
+        </ul>
+    </div>
+
+    <div class="warning">
+        <strong>⚠️ ملاحظة مهمة:</strong>
+        <p>هذا السيرفر في وضع التطوير ويستخدم بيانات وهمية. جميع محاولات تسجيل الدخول ستنجح بغض النظر عن البيانات المدخلة (طالما تتبع قواعد التحقق).</p>
+    </div>
+
+    <div class="card">
+        <h2>📚 الملفات المرجعية</h2>
+        <ul>
+            <li><strong>LOGIN_FEATURES.md</strong> - قائمة كاملة بالميزات التقنية</li>
+            <li><strong>دليل-تسجيل-الدخول.md</strong> - دليل المستخدم بالعربية</li>
+            <li><strong>public/login.html</strong> - ملف الواجهة</li>
+            <li><strong>start-simple.js</strong> - السيرفر البسيط</li>
+        </ul>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="http://localhost:3000/login.html" class="btn" target="_blank">
+            <i class="fas fa-rocket"></i> ابدأ الاختبار الآن
+        </a>
+    </div>
+</body>
+</html>

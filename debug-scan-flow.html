@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تتبع مسار الفحص</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #e0e0e0;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #4CAF50;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .log-entry {
+            background: #1a1a1a;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry.error {
+            border-left-color: #f44336;
+            background: #3a1a1a;
+        }
+        .log-entry.warning {
+            border-left-color: #ff9800;
+            background: #3a2a1a;
+        }
+        .log-entry.info {
+            border-left-color: #2196F3;
+            background: #1a2a3a;
+        }
+        .json-view {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 11px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        input {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #4a4a4a;
+            padding: 8px;
+            border-radius: 4px;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔍 تتبع مسار فحص الويب</h2>
+        <div>
+            <label>معرف الفحص:</label>
+            <input type="text" id="scanId" value="scan-1769562632172">
+            <button onclick="debugFullFlow()">🚀 تتبع المسار الكامل</button>
+            <button onclick="clearLogs()">🗑️ مسح السجل</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📋 سجل التتبع</h2>
+        <div id="logs"></div>
+    </div>
+
+    <div class="container">
+        <h2>📊 البيانات</h2>
+        <div id="data" class="json-view">جاري الانتظار...</div>
+    </div>
+
+    <script src="/js/api.js"></script>
+    <script>
+        let logCount = 0;
+
+        function log(message, type = 'info') {
+            logCount++;
+            const logsDiv = document.getElementById('logs');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${logCount}] [${new Date().toLocaleTimeString()}] ${message}`;
+            logsDiv.appendChild(entry);
+            logsDiv.scrollTop = logsDiv.scrollHeight;
+            console.log(`[${type.toUpperCase()}]`, message);
+        }
+
+        function showData(title, data) {
+            const dataDiv = document.getElementById('data');
+            dataDiv.textContent = `${title}\n${'='.repeat(60)}\n${JSON.stringify(data, null, 2)}`;
+        }
+
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            document.getElementById('data').textContent = 'جاري الانتظار...';
+            logCount = 0;
+        }
+
+        async function debugFullFlow() {
+            clearLogs();
+            const scanId = document.getElementById('scanId').value;
+
+            log('🚀 بدء تتبع المسار الكامل', 'info');
+            log(`📝 معرف الفحص: ${scanId}`, 'info');
+            log('', 'info');
+
+            // الخطوة 1: التحقق من الاتصال بالخادم
+            log('1️⃣ التحقق من الاتصال بالخادم...', 'info');
+            try {
+                const response = await fetch('http://localhost:3001/api/v1/scans/web');
+                if (response.ok) {
+                    log('✅ الخادم يعمل بشكل صحيح', 'info');
+                } else {
+                    log(`❌ الخادم يعمل لكن هناك خطأ: ${response.status}`, 'error');
+                    return;
+                }
+            } catch (error) {
+                log(`❌ فشل الاتصال بالخادم: ${error.message}`, 'error');
+                log('💡 تأكد من تشغيل الخادم: $env:PORT=3001; node server-sqlite.js', 'warning');
+                return;
+            }
+            log('', 'info');
+
+            // الخطوة 2: جلب معلومات الفحص
+            log('2️⃣ جلب معلومات الفحص...', 'info');
+            try {
+                log(`   📡 GET /api/v1/scans/web/${scanId}`, 'info');
+                const scanResponse = await fetch(`http://localhost:3001/api/v1/scans/web/${scanId}`);
+                const scanData = await scanResponse.json();
+                
+                log(`   📦 Response Status: ${scanResponse.status}`, 'info');
+                log(`   📦 Response OK: ${scanResponse.ok}`, 'info');
+                log(`   📦 Data Success: ${scanData.success}`, 'info');
+                
+                if (scanData.success && scanData.data) {
+                    log(`   ✅ تم جلب معلومات الفحص بنجاح`, 'info');
+                    log(`   📊 الهدف: ${scanData.data.target_url}`, 'info');
+                    log(`   📊 الحالة: ${scanData.data.status}`, 'info');
+                    log(`   📊 الصفحات: ${scanData.data.total_requests || 0}`, 'info');
+                    log(`   📊 الثغرات (من الفحص): ${scanData.data.total_vulnerabilities || 0}`, 'info');
+                    showData('معلومات الفحص', scanData);
+                } else {
+                    log(`   ❌ فشل جلب معلومات الفحص`, 'error');
+                    log(`   📦 Response: ${JSON.stringify(scanData)}`, 'error');
+                    showData('خطأ في معلومات الفحص', scanData);
+                    return;
+                }
+            } catch (error) {
+                log(`   ❌ خطأ في جلب معلومات الفحص: ${error.message}`, 'error');
+                return;
+            }
+            log('', 'info');
+
+            // الخطوة 3: جلب الثغرات باستخدام fetch مباشرة
+            log('3️⃣ جلب الثغرات باستخدام fetch مباشرة...', 'info');
+            try {
+                const url = `http://localhost:3001/api/v1/scans/web/${scanId}/vulnerabilities`;
+                log(`   📡 GET ${url}`, 'info');
+                
+                const vulnResponse = await fetch(url);
+                log(`   📦 Response Status: ${vulnResponse.status}`, 'info');
+                log(`   📦 Response OK: ${vulnResponse.ok}`, 'info');
+                log(`   📦 Response Headers:`, 'info');
+                vulnResponse.headers.forEach((value, key) => {
+                    log(`      ${key}: ${value}`, 'info');
+                });
+                
+                const vulnData = await vulnResponse.json();
+                log(`   📦 Data Success: ${vulnData.success}`, 'info');
+                log(`   📦 Data Type: ${typeof vulnData.data}`, 'info');
+                log(`   📦 Is Array: ${Array.isArray(vulnData.data)}`, 'info');
+                
+                if (vulnData.success) {
+                    const vulns = vulnData.data || [];
+                    log(`   ✅ تم جلب الثغرات بنجاح`, 'info');
+                    log(`   📊 عدد الثغرات: ${vulns.length}`, 'info');
+                    
+                    if (vulns.length > 0) {
+                        log(`   📊 أول ثغرة:`, 'info');
+                        log(`      - ID: ${vulns[0].id}`, 'info');
+                        log(`      - Type: ${vulns[0].type}`, 'info');
+                        log(`      - Severity: ${vulns[0].severity}`, 'info');
+                        log(`      - Location: ${vulns[0].location}`, 'info');
+                        log(`      - Scan ID: ${vulns[0].scan_session_id}`, 'info');
+                        
+                        // عرض جميع الثغرات
+                        log(`   📋 جميع الثغرات:`, 'info');
+                        vulns.forEach((v, i) => {
+                            log(`      ${i + 1}. ${v.type} (${v.severity}) - ${v.location}`, 'info');
+                        });
+                    } else {
+                        log(`   ⚠️ لا توجد ثغرات لهذا الفحص`, 'warning');
+                    }
+                    
+                    showData('الثغرات (fetch مباشر)', vulnData);
+                } else {
+                    log(`   ❌ فشل جلب الثغرات`, 'error');
+                    log(`   📦 Error: ${vulnData.error || 'غير محدد'}`, 'error');
+                    showData('خطأ في الثغرات', vulnData);
+                }
+            } catch (error) {
+                log(`   ❌ خطأ في جلب الثغرات: ${error.message}`, 'error');
+                log(`   📦 Stack: ${error.stack}`, 'error');
+            }
+            log('', 'info');
+
+            // الخطوة 4: جلب الثغرات باستخدام api.js
+            log('4️⃣ جلب الثغرات باستخدام api.js...', 'info');
+            try {
+                log(`   📡 api.get('/scans/web/${scanId}/vulnerabilities')`, 'info');
+                
+                const apiResponse = await api.get(`/scans/web/${scanId}/vulnerabilities`);
+                log(`   📦 API Response Success: ${apiResponse.success}`, 'info');
+                log(`   📦 API Response Data Type: ${typeof apiResponse.data}`, 'info');
+                log(`   📦 API Response Is Array: ${Array.isArray(apiResponse.data)}`, 'info');
+                
+                if (apiResponse.success) {
+                    const vulns = apiResponse.data || [];
+                    log(`   ✅ تم جلب الثغرات عبر api.js بنجاح`, 'info');
+                    log(`   📊 عدد الثغرات: ${vulns.length}`, 'info');
+                    showData('الثغرات (عبر api.js)', apiResponse);
+                } else {
+                    log(`   ❌ فشل جلب الثغرات عبر api.js`, 'error');
+                    showData('خطأ في api.js', apiResponse);
+                }
+            } catch (error) {
+                log(`   ❌ خطأ في api.js: ${error.message}`, 'error');
+                log(`   📦 Error Object:`, 'error');
+                log(`      - Name: ${error.name}`, 'error');
+                log(`      - Message: ${error.message}`, 'error');
+                log(`      - Status: ${error.status}`, 'error');
+                if (error.response) {
+                    log(`      - Response: ${JSON.stringify(error.response)}`, 'error');
+                }
+            }
+            log('', 'info');
+
+            // الخطوة 5: محاكاة displayWebScanResults
+            log('5️⃣ محاكاة displayWebScanResults...', 'info');
+            try {
+                log(`   📡 محاكاة الكود الموجود في operations-manager.js`, 'info');
+                
+                const response = await api.get(`/scans/web/${scanId}/vulnerabilities`);
+                log(`   📦 response.success = ${response.success}`, 'info');
+                log(`   📦 response.data = ${response.data}`, 'info');
+                log(`   📦 typeof response.data = ${typeof response.data}`, 'info');
+                log(`   📦 Array.isArray(response.data) = ${Array.isArray(response.data)}`, 'info');
+                
+                if (response.success) {
+                    const vulnerabilities = response.data || [];
+                    log(`   📦 vulnerabilities = ${vulnerabilities}`, 'info');
+                    log(`   📦 vulnerabilities.length = ${vulnerabilities.length}`, 'info');
+                    
+                    if (vulnerabilities.length === 0) {
+                        log(`   ⚠️ الكود سيعرض "لم يتم اكتشاف ثغرات"`, 'warning');
+                    } else {
+                        log(`   ✅ الكود سيعرض ${vulnerabilities.length} ثغرة`, 'info');
+                        
+                        const severityCounts = {
+                            CRITICAL: vulnerabilities.filter(v => v.severity === 'CRITICAL').length,
+                            HIGH: vulnerabilities.filter(v => v.severity === 'HIGH').length,
+                            MEDIUM: vulnerabilities.filter(v => v.severity === 'MEDIUM').length,
+                            LOW: vulnerabilities.filter(v => v.severity === 'LOW').length
+                        };
+                        
+                        log(`   📊 توزيع الخطورة:`, 'info');
+                        log(`      - CRITICAL: ${severityCounts.CRITICAL}`, 'info');
+                        log(`      - HIGH: ${severityCounts.HIGH}`, 'info');
+                        log(`      - MEDIUM: ${severityCounts.MEDIUM}`, 'info');
+                        log(`      - LOW: ${severityCounts.LOW}`, 'info');
+                    }
+                } else {
+                    log(`   ❌ response.success = false`, 'error');
+                }
+            } catch (error) {
+                log(`   ❌ خطأ في المحاكاة: ${error.message}`, 'error');
+            }
+            log('', 'info');
+
+            log('✅ انتهى التتبع الكامل', 'info');
+        }
+
+        // تحميل تلقائي
+        window.addEventListener('load', () => {
+            log('🌐 تم تحميل الصفحة', 'info');
+            log('📝 جاهز للتتبع', 'info');
+        });
+    </script>
+</body>
+</html>

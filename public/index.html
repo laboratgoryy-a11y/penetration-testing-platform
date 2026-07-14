@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة اختبار الاختراق والأمن الهجومي</title>
+    
+    <script src="/js/connectivity-guard.js?v=20260630-connectivity"></script>
+
+    <!-- Authentication Check - Must be first -->
+    <script>
+        // Check authentication immediately before loading anything
+        (function() {
+            const token = localStorage.getItem('auth_token');
+            const redirectFlag = sessionStorage.getItem('auth_redirect_flag');
+            
+            // If no token and not coming from login, redirect to login
+            if (!token || token === 'null' || token === 'undefined') {
+                if (redirectFlag !== 'from_login') {
+                    sessionStorage.setItem('auth_redirect_flag', 'to_login');
+                    window.location.replace('/login.html');
+                    return;
+                }
+            }
+        })();
+    </script>
+    
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/enhancements.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <link rel="stylesheet" href="/css/performance.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <i class="fas fa-shield-alt"></i>
+            <h2>منصة الاختراق</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="javascript:void(0)" class="nav-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>لوحة التحكم</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" data-page="web-scan">
+                <i class="fas fa-globe"></i>
+                <span>فحص الويب</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" data-page="phishing">
+                <i class="fas fa-fish"></i>
+                <span>حملات التصيد</span>
+            </a>
+            <a href="/ip-scanner.html" class="nav-item" target="_self">
+                <i class="fas fa-server"></i>
+                <span>فحص IP</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" data-page="network">
+                <i class="fas fa-network-wired"></i>
+                <span>تحليل الشبكات</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" data-page="reports">
+                <i class="fas fa-file-alt"></i>
+                <span>التقارير</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" data-page="authorizations">
+                <i class="fas fa-key"></i>
+                <span>التصاريح</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" data-page="audit">
+                <i class="fas fa-history"></i>
+                <span>السجلات</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <i class="fas fa-user-circle"></i>
+                <span id="username">المستخدم</span>
+            </div>
+            <button class="btn-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                تسجيل الخروج
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <button class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 id="pageTitle">لوحة التحكم</h1>
+            <div class="header-actions">
+                <button class="btn-icon" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <div class="content" id="content">
+            <!-- Dashboard Page (Default) -->
+            <div class="page active" id="dashboard-page">
+                <!-- Breadcrumbs -->
+                <div id="breadcrumbs" class="breadcrumbs"></div>
+                
+                <!-- زر بدء عملية جديدة - بارز -->
+                <div style="margin-bottom: 20px;">
+                    <button id="btn-new-operation" class="btn-primary" style="font-size: 18px; padding: 15px 30px;">
+                        <i class="fas fa-plus-circle"></i>
+                        بدء عملية جديدة
+                    </button>
+                </div>
+                
+                <!-- آخر تحديث -->
+                <div id="dashboard-last-update" style="text-align: left; color: #666; font-size: 12px; margin-bottom: 10px;"></div>
+                
+                <!-- Loading Indicator -->
+                <div id="dashboard-loading" style="display: none; text-align: center; padding: 20px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px;"></i>
+                    <p>جاري تحميل البيانات...</p>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-total-scans">-</h3>
+                            <p>عمليات الفحص</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-total-vulnerabilities">-</h3>
+                            <p>الثغرات المكتشفة</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-fish"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-total-campaigns">-</h3>
+                            <p>حملات التصيد</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-total-network-tests">-</h3>
+                            <p>اختبارات الشبكة</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الرسم البياني -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>توزيع الثغرات حسب النوع</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container" style="position: relative; height: 300px;">
+                            <canvas id="vulnerability-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>النشاط الأخير</h2>
+                        <button class="btn-secondary btn-sm" onclick="window.navigationManager.navigateTo('audit')">عرض الكل</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-list" id="recentActivity">
+                            <div style="text-align: center; padding: 20px; color: #666;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                                <p>جاري تحميل النشاط الأخير...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn" data-action="new-scan">
+                        <i class="fas fa-plus"></i>
+                        <span>فحص جديد</span>
+                    </button>
+                    <button class="action-btn" data-action="new-campaign">
+                        <i class="fas fa-fish"></i>
+                        <span>حملة تصيد</span>
+                    </button>
+                    <button class="action-btn" data-action="network-test">
+                        <i class="fas fa-network-wired"></i>
+                        <span>اختبار شبكة</span>
+                    </button>
+                    <button class="action-btn" data-action="generate-report">
+                        <i class="fas fa-file-pdf"></i>
+                        <span>تقرير جديد</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Other pages will be loaded dynamically -->
+            <div class="page" id="web-scan-page"></div>
+            <div class="page" id="phishing-page"></div>
+            <div class="page" id="network-page"></div>
+            <div class="page" id="reports-page"></div>
+            <div class="page" id="authorizations-page"></div>
+            <div class="page" id="audit-page"></div>
+        </div>
+    </main>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تسجيل الدخول</h2>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>البريد الإلكتروني</label>
+                        <input type="email" id="loginEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label>كلمة المرور</label>
+                        <input type="password" id="loginPassword" required>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">دخول</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>جاري التحميل...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Network Analysis Templates -->
+    <template id="network-analyses-list-template">
+        <div class="network-section">
+            <div class="section-header">
+                <h2>تحليل الشبكات</h2>
+                <button class="btn-primary" onclick="operationsManager.showNewOperationModal('network')">
+                    <i class="fas fa-plus"></i> تحليل جديد
+                </button>
+            </div>
+            <div id="network-analyses-list"></div>
+        </div>
+    </template>
+
+    <template id="network-analysis-details-template">
+        <div class="analysis-details-section">
+            <div id="network-analysis-details"></div>
+        </div>
+    </template>
+
+    <!-- Reports Templates -->
+    <template id="reports-template">
+        <div class="reports-section">
+            <div class="section-header">
+                <h2>التقارير</h2>
+                <button class="btn-primary" onclick="reportManager.showGenerateReportModal()">
+                    <i class="fas fa-plus"></i> إنشاء تقرير جديد
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-body">
+                    <div class="filters-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                        <div class="form-group" style="margin: 0;">
+                            <label>نوع التقرير</label>
+                            <select id="filter-report-type" class="form-control" onchange="reportManager.filterReports({ type: this.value })">
+                                <option value="all">جميع الأنواع</option>
+                                <option value="scan">فحص ويب</option>
+                                <option value="campaign">حملة تصيد</option>
+                                <option value="network">اختبار شبكة</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" style="margin: 0;">
+                            <label>من تاريخ</label>
+                            <input type="date" id="filter-date-from" class="form-control" 
+                                   onchange="reportManager.filterReports({ dateFrom: this.value })">
+                        </div>
+                        
+                        <div class="form-group" style="margin: 0;">
+                            <label>إلى تاريخ</label>
+                            <input type="date" id="filter-date-to" class="form-control" 
+                                   onchange="reportManager.filterReports({ dateTo: this.value })">
+                        </div>
+                        
+                        <div class="form-group" style="margin: 0;">
+                            <label>الحالة</label>
+                            <select id="filter-status" class="form-control" onchange="reportManager.filterReports({ status: this.value })">
+                                <option value="all">جميع الحالات</option>
+                                <option value="completed">مكتمل</option>
+                                <option value="generating">قيد الإنشاء</option>
+                                <option value="failed">فشل</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports List -->
+            <div class="card">
+                <div class="card-body">
+                    <div id="reports-list">
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 32px; margin-bottom: 15px;"></i>
+                            <p>جاري تحميل التقارير...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <!-- Audit Logs Templates -->
+    <template id="audit-logs-template">
+        <div class="audit-logs-section">
+            <div class="section-header">
+                <h2>سجلات التدقيق</h2>
+                <div class="header-actions">
+                    <button class="btn-secondary" id="export-logs-btn">
+                        <i class="fas fa-download"></i> تصدير السجلات
+                    </button>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-body">
+                    <form id="audit-filter-form">
+                        <div class="filters-row" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                            <div class="form-group" style="margin: 0;">
+                                <label>نوع الحدث</label>
+                                <select id="filter-event-type" class="form-control">
+                                    <option value="">جميع الأحداث</option>
+                                    <option value="LOGIN">تسجيل دخول</option>
+                                    <option value="LOGOUT">تسجيل خروج</option>
+                                    <option value="SCAN_CREATED">إنشاء فحص</option>
+                                    <option value="SCAN_COMPLETED">اكتمال فحص</option>
+                                    <option value="CAMPAIGN_CREATED">إنشاء حملة</option>
+                                    <option value="CAMPAIGN_LAUNCHED">إطلاق حملة</option>
+                                    <option value="NETWORK_TEST_CREATED">إنشاء اختبار شبكة</option>
+                                    <option value="AUTHORIZATION_CREATED">إنشاء تصريح</option>
+                                    <option value="AUTHORIZATION_REVOKED">إلغاء تصريح</option>
+                                    <option value="REPORT_GENERATED">إنشاء تقرير</option>
+                                    <option value="SECURITY_VIOLATION">انتهاك أمني</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" style="margin: 0;">
+                                <label>معرف المستخدم</label>
+                                <input type="text" id="filter-user-id" class="form-control" placeholder="أدخل معرف المستخدم">
+                            </div>
+                            
+                            <div class="form-group" style="margin: 0;">
+                                <label>من تاريخ</label>
+                                <input type="datetime-local" id="filter-start-date" class="form-control">
+                            </div>
+                            
+                            <div class="form-group" style="margin: 0;">
+                                <label>إلى تاريخ</label>
+                                <input type="datetime-local" id="filter-end-date" class="form-control">
+                            </div>
+                            
+                            <div class="form-group" style="margin: 0;">
+                                <label>النتيجة</label>
+                                <select id="filter-result" class="form-control">
+                                    <option value="">جميع النتائج</option>
+                                    <option value="SUCCESS">نجاح</option>
+                                    <option value="FAILURE">فشل</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" style="margin: 0; display: flex; align-items: flex-end; gap: 10px;">
+                                <button type="submit" class="btn-primary" style="flex: 1;">
+                                    <i class="fas fa-filter"></i> تطبيق الفلاتر
+                                </button>
+                                <button type="button" class="btn-secondary" id="reset-filters-btn" style="flex: 1;">
+                                    <i class="fas fa-redo"></i> إعادة تعيين
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Export Format Selection -->
+            <div class="card" style="margin-bottom: 20px;">
+                <div class="card-body">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <label style="margin: 0;">صيغة التصدير:</label>
+                        <select id="export-format" class="form-control" style="max-width: 200px;">
+                            <option value="csv">CSV</option>
+                            <option value="json">JSON</option>
+                        </select>
+                        <div style="flex: 1;"></div>
+                        <label style="margin: 0;">عدد السجلات في الصفحة:</label>
+                        <select id="page-size-select" class="form-control" style="max-width: 100px;">
+                            <option value="25">25</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                            <option value="200">200</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Update -->
+            <div id="audit-logs-last-update" style="text-align: left; color: #666; font-size: 12px; margin-bottom: 10px;"></div>
+
+            <!-- Audit Logs List -->
+            <div class="card">
+                <div class="card-body">
+                    <div id="audit-logs-list">
+                        <div style="text-align: center; padding: 40px; color: #666;">
+                            <i class="fas fa-spinner fa-spin" style="font-size: 32px; margin-bottom: 15px;"></i>
+                            <p>جاري تحميل السجلات...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div id="audit-logs-pagination" style="margin-top: 20px;"></div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <!-- Core utilities -->
+    <script src="/js/notification-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/loading-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/table-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/error-handler.js?v=20260512-ui-fix2"></script>
+    <script src="/js/input-validator.js?v=20260512-ui-fix2"></script>
+    <script src="/js/inactivity-detector.js?v=20260512-ui-fix2"></script>
+    
+    <!-- State and navigation -->
+    <script src="/js/state-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/navigation-manager.js?v=20260512-ui-fix2"></script>
+    
+    <!-- API and auth -->
+    <script src="/js/api.js?v=20260512-ui-fix2"></script>
+    <script src="/js/auth.js?v=20260512-ui-fix2"></script>
+    
+    <!-- Feature managers -->
+    <script src="/js/operations-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/web-scanner-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/phishing-campaign-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/network-analyzer-manager.js?v=20260512-ui-fix2"></script>
+    <script src="/js/audit-logger-manager.js?v=20260512-ui-fix2"></script>
+    
+    <!-- Page scripts -->
+    <script src="/js/dashboard.js?v=20260512-ui-fix2"></script>
+    <script src="/js/web-scan.js?v=20260512-ui-fix2"></script>
+    <script src="/js/phishing.js?v=20260512-ui-fix2"></script>
+    <script src="/js/network.js?v=20260512-ui-fix2"></script>
+    <script src="/js/reports.js?v=20260512-ui-fix2"></script>
+    
+    <!-- Main initialization -->
+    <script src="/js/main.js?v=20260512-ui-fix2"></script>
+    
+    <!-- Arabic UI text and authorization fixes -->
+    <script src="/js/arabic-ui-fixes.js?v=20260512-ui-fix2"></script>
+    
+    <!-- Authentication Check -->
+    <script>
+        // Prevent redirect loop
+        const redirectFlag = sessionStorage.getItem('auth_redirect_flag');
+        if (redirectFlag === 'from_login') {
+            sessionStorage.removeItem('auth_redirect_flag');
+        }
+
+        // Check if user is authenticated when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Check authentication using the correct token key
+            const token = localStorage.getItem('auth_token');
+            
+            if (!token || token === 'null' || token === 'undefined') {
+                
+                // Prevent redirect loop
+                if (redirectFlag === 'from_login') {
+                    console.error('Redirect loop detected! Clearing storage and stopping.');
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    alert('حدث خطأ في المصادقة. يرجى تسجيل الدخول مرة أخرى.');
+                    return;
+                }
+                
+                // Set flag and redirect
+                sessionStorage.setItem('auth_redirect_flag', 'to_login');
+                localStorage.clear(); // Clear all storage
+                window.location.replace('/login.html');
+                return;
+            }
+            
+            sessionStorage.removeItem('auth_redirect_flag'); // Clear flag on successful auth
+        });
+    </script>
+</body>
+</html>

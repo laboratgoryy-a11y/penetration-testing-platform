@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌐 ابدأ تحليل الشبكة الآن</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        
+        .step-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+        }
+        
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+        
+        .step-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+        
+        .step-content {
+            padding: 20px;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .success-box {
+            background: #f0fdf4;
+            border: 2px solid #10b981;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .input-group {
+            margin: 15px 0;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+            margin: 5px;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: #10b981;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .btn-large {
+            padding: 20px 40px;
+            font-size: 20px;
+        }
+        
+        .test-types {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .test-type-item {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .test-type-item:hover {
+            border-color: #667eea;
+            background: #f0f9ff;
+        }
+        
+        .test-type-item input[type="checkbox"] {
+            margin-left: 10px;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .test-type-item label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        
+        .test-type-desc {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+            margin-right: 30px;
+        }
+        
+        .code-box {
+            background: #1f2937;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f9fafb;
+            border-radius: 6px;
+            border-right: 4px solid #10b981;
+        }
+        
+        .checklist li::before {
+            content: "✅ ";
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌐 ابدأ تحليل الشبكة الآن</h1>
+            <p>دليل تفاعلي خطوة بخطوة</p>
+        </div>
+
+        <!-- Step 0: Prerequisites -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">⚠️</div>
+                <div class="step-title">قبل البدء - تحقق من هذه النقاط</div>
+            </div>
+            <div class="step-content">
+                <ul class="checklist">
+                    <li>تم إعادة تشغيل السيرفر (⚡-أعد-التشغيل-الآن.bat)</li>
+                    <li>تم مسح كاش المتصفح (Ctrl + Shift + Delete)</li>
+                    <li>السيرفر يعمل على http://localhost:3000</li>
+                    <li>تم تسجيل الدخول (admin / admin123)</li>
+                </ul>
+                
+                <div class="warning-box">
+                    <strong>⚠️ مهم جداً:</strong> إذا لم تقم بإعادة تشغيل السيرفر، الإصلاحات لن تعمل!
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="http://localhost:3000" target="_blank" class="btn btn-success btn-large">
+                        🌐 افتح النظام الآن
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1: Get Network Info -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-title">احصل على معلومات شبكتك</div>
+            </div>
+            <div class="step-content">
+                <h3>على Windows:</h3>
+                <p>افتح Command Prompt واكتب:</p>
+                <div class="code-box">ipconfig /all</div>
+                
+                <h3 style="margin-top: 20px;">ابحث عن:</h3>
+                <div class="info-box">
+                    <strong>Physical Address (MAC):</strong> XX-XX-XX-XX-XX-XX<br>
+                    <small>هذا هو BSSID (استبدل - بـ :)</small>
+                </div>
+                
+                <h3 style="margin-top: 20px;">أو على الهاتف:</h3>
+                <p>الإعدادات > Wi-Fi > اضغط على شبكتك > ستجد BSSID و SSID</p>
+                
+                <h3 style="margin-top: 20px;">املأ معلومات شبكتك هنا:</h3>
+                <div class="input-group">
+                    <label>BSSID (عنوان MAC) - مطلوب:</label>
+                    <input type="text" id="bssid" placeholder="مثال: 4a:1f:4c:46:18:2b" value="4a:1f:4c:46:18:2b">
+                    <small>التنسيق: XX:XX:XX:XX:XX:XX</small>
+                </div>
+                
+                <div class="input-group">
+                    <label>SSID (اسم الشبكة) - اختياري:</label>
+                    <input type="text" id="ssid" placeholder="مثال: faraa net" value="faraa net">
+                </div>
+                
+                <button class="btn btn-success" onclick="saveNetworkInfo()">
+                    💾 حفظ المعلومات
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Create Authorization -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">2</div>
+                <div class="step-title">أنشئ تصريحاً (إذا لم يكن لديك)</div>
+            </div>
+            <div class="step-content">
+                <div class="info-box">
+                    <strong>📋 ما هو التصريح؟</strong><br>
+                    التصريح هو إذن رسمي لتحليل شبكة معينة. يضمن أنك تختبر شبكتك الخاصة فقط.
+                </div>
+                
+                <h3>خطوات إنشاء التصريح:</h3>
+                <ol style="margin-right: 20px; line-height: 2;">
+                    <li>اذهب إلى قسم <strong>"التصاريح"</strong></li>
+                    <li>اضغط <strong>"إنشاء تصريح جديد"</strong></li>
+                    <li>املأ البيانات:
+                        <ul style="margin-right: 20px; margin-top: 10px;">
+                            <li><strong>اسم المنظمة:</strong> اسم شبكتك (مثلاً: "شبكة المنزل")</li>
+                            <li><strong>نوع العملية:</strong> اختر <code>NETWORK_TEST</code> أو <code>ALL</code></li>
+                            <li><strong>Networks:</strong> أضف <code>192.168.0.0/24</code></li>
+                            <li><strong>تاريخ الانتهاء:</strong> اختر تاريخ في المستقبل</li>
+                        </ul>
+                    </li>
+                    <li>اضغط <strong>"إنشاء"</strong></li>
+                </ol>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="http://localhost:3000" target="_blank" class="btn">
+                        🔑 اذهب لإنشاء التصريح
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Choose Test Types -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">3</div>
+                <div class="step-title">اختر أنواع الاختبارات</div>
+            </div>
+            <div class="step-content">
+                <div class="success-box">
+                    <strong>💡 للمبتدئين:</strong> ابدأ بـ <strong>TRAFFIC_ANALYSIS</strong> فقط
+                </div>
+                
+                <div class="test-types">
+                    <div class="test-type-item">
+                        <label>
+                            <input type="checkbox" id="test-traffic" checked>
+                            <strong>TRAFFIC_ANALYSIS - تحليل حركة المرور</strong>
+                        </label>
+                        <div class="test-type-desc">
+                            ✅ الأفضل للمبتدئين | ⏱️ 5-10 دقائق | 🛡️ آمن جداً<br>
+                            يراقب حركة البيانات ويكتشف الأجهزة المتصلة
+                        </div>
+                    </div>
+                    
+                    <div class="test-type-item">
+                        <label>
+                            <input type="checkbox" id="test-handshake">
+                            <strong>WPA_HANDSHAKE - التقاط WPA Handshake</strong>
+                        </label>
+                        <div class="test-type-desc">
+                            ⚠️ متوسط | ⏱️ 5-15 دقيقة | 🛡️ آمن<br>
+                            يلتقط "المصافحة" لاختبار قوة كلمة المرور
+                        </div>
+                    </div>
+                    
+                    <div class="test-type-item">
+                        <label>
+                            <input type="checkbox" id="test-wps">
+                            <strong>WPS_ATTACK - هجوم WPS</strong>
+                        </label>
+                        <div class="test-type-desc">
+                            ⚠️ متقدم | ⏱️ 2-8 ساعات | 🛡️ متوسط<br>
+                            يستغل ثغرة في WPS (إذا كان مفعلاً)
+                        </div>
+                    </div>
+                    
+                    <div class="test-type-item">
+                        <label>
+                            <input type="checkbox" id="test-deauth">
+                            <strong>DEAUTH_ATTACK - هجوم Deauth</strong>
+                        </label>
+                        <div class="test-type-desc">
+                            ⚠️ متقدم | ⏱️ 1-5 دقائق | 🛡️ حذر!<br>
+                            يقطع اتصال الأجهزة مؤقتاً (قد يزعج المستخدمين)
+                        </div>
+                    </div>
+                    
+                    <div class="test-type-item">
+                        <label>
+                            <input type="checkbox" id="test-wep">
+                            <strong>WEP_CRACK - اختراق WEP</strong>
+                        </label>
+                        <div class="test-type-desc">
+                            ⚠️ للشبكات القديمة فقط | ⏱️ 10-30 دقيقة | 🛡️ متوسط<br>
+                            يكسر تشفير WEP (نادراً ما يُستخدم اليوم)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 4: Start Analysis -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">4</div>
+                <div class="step-title">ابدأ التحليل</div>
+            </div>
+            <div class="step-content">
+                <h3>الخطوات النهائية:</h3>
+                <ol style="margin-right: 20px; line-height: 2;">
+                    <li>اذهب إلى قسم <strong>"تحليل الشبكات"</strong></li>
+                    <li>اضغط <strong>"بدء عملية جديدة"</strong> أو <strong>"تحليل الشبكة"</strong></li>
+                    <li>املأ النموذج:
+                        <div class="info-box" style="margin-top: 10px;">
+                            <strong>BSSID:</strong> <span id="display-bssid">4a:1f:4c:46:18:2b</span><br>
+                            <strong>SSID:</strong> <span id="display-ssid">faraa net</span><br>
+                            <strong>التصريح:</strong> اختر التصريح الذي أنشأته<br>
+                            <strong>الاختبارات:</strong> <span id="display-tests">TRAFFIC_ANALYSIS</span>
+                        </div>
+                    </li>
+                    <li>اضغط <strong>"بدء التحليل"</strong></li>
+                    <li>افتح <strong>Console (F12)</strong> لمراقبة التقدم</li>
+                </ol>
+                
+                <div class="success-box">
+                    <strong>✅ النتيجة المتوقعة:</strong><br>
+                    • رسالة نجاح: "تم بدء تحليل الشبكة بنجاح!"<br>
+                    • الانتقال إلى صفحة Network<br>
+                    • لا أخطاء في Console
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="http://localhost:3000" target="_blank" class="btn btn-success btn-large">
+                        🚀 ابدأ التحليل الآن
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 5: Monitor Progress -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">5</div>
+                <div class="step-title">راقب التقدم</div>
+            </div>
+            <div class="step-content">
+                <h3>كيف تراقب التقدم:</h3>
+                <ol style="margin-right: 20px; line-height: 2;">
+                    <li>افتح <strong>Console (اضغط F12)</strong></li>
+                    <li>ابحث عن رسائل مثل:
+                        <div class="code-box" style="margin-top: 10px;">
+Creating network test: {<br>
+&nbsp;&nbsp;target: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;ssid: "faraa net",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bssid: "4a:1f:4c:46:18:2b",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;authorizationId: "..."<br>
+&nbsp;&nbsp;}<br>
+}
+                        </div>
+                    </li>
+                    <li>تحقق من قسم "تحليل الشبكات" لرؤية الحالة</li>
+                </ol>
+                
+                <div class="warning-box">
+                    <strong>⚠️ إذا رأيت أخطاء:</strong><br>
+                    • تأكد من إعادة تشغيل السيرفر<br>
+                    • تأكد من مسح الكاش<br>
+                    • تحقق من أن BSSID بالتنسيق الصحيح<br>
+                    • تحقق من أن لديك تصريح نشط
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 6: View Results -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">6</div>
+                <div class="step-title">اعرض النتائج</div>
+            </div>
+            <div class="step-content">
+                <h3>بعد انتهاء التحليل:</h3>
+                <ol style="margin-right: 20px; line-height: 2;">
+                    <li>اذهب إلى قسم <strong>"تحليل الشبكات"</strong></li>
+                    <li>ستجد قائمة بجميع التحليلات</li>
+                    <li>اضغط على التحليل لعرض:
+                        <ul style="margin-right: 20px; margin-top: 10px;">
+                            <li>الثغرات المكتشفة</li>
+                            <li>نقاط الضعف</li>
+                            <li>التوصيات</li>
+                            <li>معلومات الشبكة</li>
+                        </ul>
+                    </li>
+                    <li>اضغط <strong>"تحميل التقرير"</strong> للحصول على تقرير PDF</li>
+                </ol>
+                
+                <div class="success-box">
+                    <strong>🎉 تهانينا!</strong><br>
+                    لقد أكملت أول تحليل شبكة ناجح!
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="step-card">
+            <div class="step-header">
+                <div class="step-number">📚</div>
+                <div class="step-title">مرجع سريع</div>
+            </div>
+            <div class="step-content">
+                <h3>معلومات شبكتك المحفوظة:</h3>
+                <div class="info-box">
+                    <strong>BSSID:</strong> <span id="saved-bssid">4a:1f:4c:46:18:2b</span><br>
+                    <strong>SSID:</strong> <span id="saved-ssid">faraa net</span>
+                </div>
+                
+                <h3 style="margin-top: 20px;">روابط مفيدة:</h3>
+                <div style="text-align: center;">
+                    <a href="http://localhost:3000" target="_blank" class="btn">🌐 النظام</a>
+                    <a href="🌐-دليل-تحليل-الشبكات-الفعلي.md" class="btn">📖 الدليل الكامل</a>
+                    <button class="btn" onclick="window.print()">🖨️ طباعة</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function saveNetworkInfo() {
+            const bssid = document.getElementById('bssid').value;
+            const ssid = document.getElementById('ssid').value;
+            
+            if (!bssid) {
+                alert('⚠️ يجب إدخال BSSID!');
+                return;
+            }
+            
+            // Validate BSSID format
+            const bssidPattern = /^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$/;
+            if (!bssidPattern.test(bssid)) {
+                alert('⚠️ تنسيق BSSID غير صحيح!\n\nالتنسيق الصحيح: XX:XX:XX:XX:XX:XX\nمثال: 4a:1f:4c:46:18:2b');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('network_bssid', bssid);
+            localStorage.setItem('network_ssid', ssid);
+            
+            // Update display
+            document.getElementById('display-bssid').textContent = bssid;
+            document.getElementById('display-ssid').textContent = ssid || 'غير محدد';
+            document.getElementById('saved-bssid').textContent = bssid;
+            document.getElementById('saved-ssid').textContent = ssid || 'غير محدد';
+            
+            // Update test types display
+            updateTestTypesDisplay();
+            
+            alert('✅ تم حفظ معلومات الشبكة!\n\nيمكنك الآن المتابعة إلى الخطوة التالية.');
+        }
+        
+        function updateTestTypesDisplay() {
+            const tests = [];
+            if (document.getElementById('test-traffic').checked) tests.push('TRAFFIC_ANALYSIS');
+            if (document.getElementById('test-handshake').checked) tests.push('WPA_HANDSHAKE');
+            if (document.getElementById('test-wps').checked) tests.push('WPS_ATTACK');
+            if (document.getElementById('test-deauth').checked) tests.push('DEAUTH_ATTACK');
+            if (document.getElementById('test-wep').checked) tests.push('WEP_CRACK');
+            
+            document.getElementById('display-tests').textContent = tests.join(', ') || 'لم يتم اختيار أي اختبار';
+        }
+        
+        // Load saved data on page load
+        window.addEventListener('load', () => {
+            const savedBssid = localStorage.getItem('network_bssid');
+            const savedSsid = localStorage.getItem('network_ssid');
+            
+            if (savedBssid) {
+                document.getElementById('bssid').value = savedBssid;
+                document.getElementById('display-bssid').textContent = savedBssid;
+                document.getElementById('saved-bssid').textContent = savedBssid;
+            }
+            
+            if (savedSsid) {
+                document.getElementById('ssid').value = savedSsid;
+                document.getElementById('display-ssid').textContent = savedSsid;
+                document.getElementById('saved-ssid').textContent = savedSsid;
+            }
+            
+            // Add event listeners to checkboxes
+            document.querySelectorAll('.test-types input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateTestTypesDisplay);
+            });
+            
+            updateTestTypesDisplay();
+        });
+    </script>
+</body>
+</html>

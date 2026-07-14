@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض الثغرات المكتشفة</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #374151;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card.critical {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+        }
+
+        .stat-card.high {
+            background: #fef3c7;
+            border: 2px solid #fde68a;
+        }
+
+        .stat-card.medium {
+            background: #fef9c3;
+            border: 2px solid #fde047;
+        }
+
+        .stat-card.low {
+            background: #f0f9ff;
+            border: 2px solid #bae6fd;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .vuln-list {
+            margin-top: 30px;
+        }
+
+        .vuln-item {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border-right: 5px solid;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .vuln-item.critical {
+            border-right-color: #dc2626;
+        }
+
+        .vuln-item.high {
+            border-right-color: #f59e0b;
+        }
+
+        .vuln-item.medium {
+            border-right-color: #eab308;
+        }
+
+        .vuln-item.low {
+            border-right-color: #3b82f6;
+        }
+
+        .vuln-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .vuln-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        .vuln-number {
+            color: #6b7280;
+            font-weight: normal;
+        }
+
+        .severity-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .severity-badge.critical {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+
+        .severity-badge.high {
+            background: #fef3c7;
+            color: #f59e0b;
+        }
+
+        .severity-badge.medium {
+            background: #fef9c3;
+            color: #eab308;
+        }
+
+        .severity-badge.low {
+            background: #f0f9ff;
+            color: #3b82f6;
+        }
+
+        .vuln-location {
+            background: #f9fafb;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            word-break: break-all;
+            font-family: monospace;
+            font-size: 13px;
+            color: #374151;
+        }
+
+        .vuln-description {
+            color: #374151;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .vuln-evidence {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-bottom: 12px;
+        }
+
+        .vuln-remediation {
+            background: #f0fdf4;
+            color: #166534;
+            padding: 10px;
+            border-radius: 6px;
+            border-right: 3px solid #10b981;
+            margin-bottom: 12px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 4px solid #dc2626;
+            margin: 20px 0;
+        }
+
+        .success {
+            background: #f0fdf4;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 4px solid #10b981;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-bug"></i> عرض الثغرات المكتشفة</h1>
+        <p class="subtitle">أدخل معرف الفحص لعرض جميع الثغرات بالتفصيل</p>
+        
+        <div class="input-group">
+            <label for="scanId"><i class="fas fa-fingerprint"></i> معرف الفحص (Scan ID):</label>
+            <input type="text" id="scanId" placeholder="scan-1769593672978" value="scan-1769593672978">
+        </div>
+
+        <button onclick="loadVulnerabilities()">
+            <i class="fas fa-search"></i> عرض الثغرات
+        </button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        async function loadVulnerabilities() {
+            const scanId = document.getElementById('scanId').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!scanId) {
+                resultsDiv.innerHTML = '<div class="error"><i class="fas fa-exclamation-triangle"></i> يرجى إدخال معرف الفحص</div>';
+                return;
+            }
+
+            resultsDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin" style="font-size: 48px;"></i><p style="margin-top: 20px;">جاري تحميل الثغرات...</p></div>';
+
+            try {
+                const response = await fetch(`http://localhost:3001/api/v1/scans/web/${scanId}/vulnerabilities`);
+                const data = await response.json();
+                
+                if (!data.success || !data.data) {
+                    throw new Error('فشل تحميل الثغرات');
+                }
+                
+                const vulnerabilities = data.data;
+                
+                if (vulnerabilities.length === 0) {
+                    resultsDiv.innerHTML = `
+                        <div class="success" style="text-align: center; padding: 60px;">
+                            <i class="fas fa-shield-alt" style="font-size: 64px;"></i>
+                            <h2 style="margin-top: 20px;">لم يتم اكتشاف ثغرات! 🎉</h2>
+                            <p style="margin-top: 10px;">الموقع آمن من الثغرات الشائعة</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // حساب الإحصائيات
+                const stats = {
+                    critical: vulnerabilities.filter(v => v.severity === 'CRITICAL').length,
+                    high: vulnerabilities.filter(v => v.severity === 'HIGH').length,
+                    medium: vulnerabilities.filter(v => v.severity === 'MEDIUM').length,
+                    low: vulnerabilities.filter(v => v.severity === 'LOW').length
+                };
+                
+                // عرض النتائج
+                let html = `
+                    <div class="success">
+                        <i class="fas fa-check-circle"></i>
+                        تم العثور على <strong>${vulnerabilities.length}</strong> ثغرة
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat-card critical">
+                            <div class="stat-number" style="color: #dc2626;">${stats.critical}</div>
+                            <div class="stat-label" style="color: #991b1b;">🔴 حرجة</div>
+                        </div>
+                        <div class="stat-card high">
+                            <div class="stat-number" style="color: #f59e0b;">${stats.high}</div>
+                            <div class="stat-label" style="color: #92400e;">🟠 عالية</div>
+                        </div>
+                        <div class="stat-card medium">
+                            <div class="stat-number" style="color: #eab308;">${stats.medium}</div>
+                            <div class="stat-label" style="color: #713f12;">🟡 متوسطة</div>
+                        </div>
+                        <div class="stat-card low">
+                            <div class="stat-number" style="color: #3b82f6;">${stats.low}</div>
+                            <div class="stat-label" style="color: #1e40af;">🟢 منخفضة</div>
+                        </div>
+                    </div>
+                    
+                    <div class="vuln-list">
+                        <h2 style="margin-bottom: 20px; color: #111827;">
+                            <i class="fas fa-list"></i> قائمة الثغرات التفصيلية
+                        </h2>
+                `;
+                
+                vulnerabilities.forEach((vuln, index) => {
+                    const severityClass = vuln.severity.toLowerCase();
+                    const severityText = {
+                        'CRITICAL': 'حرجة',
+                        'HIGH': 'عالية',
+                        'MEDIUM': 'متوسطة',
+                        'LOW': 'منخفضة'
+                    }[vuln.severity] || vuln.severity;
+                    
+                    const typeText = {
+                        'SQL_INJECTION': 'حقن SQL',
+                        'XSS': 'البرمجة النصية عبر المواقع',
+                        'CSRF': 'تزوير الطلبات عبر المواقع',
+                        'SECURITY_MISCONFIGURATION': 'خطأ في التكوين الأمني',
+                        'SENSITIVE_DATA_EXPOSURE': 'كشف البيانات الحساسة'
+                    }[vuln.type] || vuln.type.replace(/_/g, ' ');
+                    
+                    html += `
+                        <div class="vuln-item ${severityClass}">
+                            <div class="vuln-header">
+                                <div>
+                                    <div class="vuln-title">
+                                        <span class="vuln-number">#${index + 1}</span>
+                                        ${vuln.type.replace(/_/g, ' ')}
+                                    </div>
+                                    <div style="color: #6b7280; font-size: 14px; margin-top: 5px;">
+                                        <i class="fas fa-tag"></i> ${typeText}
+                                    </div>
+                                </div>
+                                <span class="severity-badge ${severityClass}">
+                                    ${severityText}
+                                </span>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
+                                    <i class="fas fa-map-marker-alt"></i> الموقع:
+                                </div>
+                                <div class="vuln-location">${vuln.location}</div>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
+                                    <i class="fas fa-info-circle"></i> الوصف:
+                                </div>
+                                <div class="vuln-description">${vuln.description}</div>
+                            </div>
+                            
+                            ${vuln.evidence ? `
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
+                                        <i class="fas fa-search"></i> الدليل:
+                                    </div>
+                                    <div class="vuln-evidence">${vuln.evidence}</div>
+                                </div>
+                            ` : ''}
+                            
+                            ${vuln.remediation ? `
+                                <div style="margin-bottom: 12px;">
+                                    <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
+                                        <i class="fas fa-wrench"></i> الحل المقترح:
+                                    </div>
+                                    <div class="vuln-remediation">${vuln.remediation}</div>
+                                </div>
+                            ` : ''}
+                            
+                            <div style="display: flex; gap: 20px; padding-top: 12px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
+                                ${vuln.cvss_score ? `
+                                    <div>
+                                        <i class="fas fa-chart-line"></i>
+                                        <strong>CVSS Score:</strong> ${vuln.cvss_score}
+                                    </div>
+                                ` : ''}
+                                <div>
+                                    <i class="fas fa-clock"></i>
+                                    <strong>اكتُشفت في:</strong> ${new Date(vuln.discovered_at).toLocaleString('ar-EG')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>خطأ:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // تحميل تلقائي عند فتح الصفحة
+        window.addEventListener('load', () => {
+            const scanId = document.getElementById('scanId').value;
+            if (scanId) {
+                loadVulnerabilities();
+            }
+        });
+    </script>
+</body>
+</html>

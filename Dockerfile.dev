@@ -1,0 +1,34 @@
+# Development Dockerfile with hot reload
+# منصة اختبار الاختراق والأمن الهجومي
+
+FROM node:20-alpine
+
+# Install development tools
+RUN apk add --no-cache \
+    git \
+    python3 \
+    make \
+    g++ \
+    && rm -rf /var/cache/apk/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY tsconfig.json ./
+
+# Install all dependencies (including dev dependencies)
+RUN npm install
+
+# Copy source code
+COPY src ./src
+
+# Create directories for data
+RUN mkdir -p /app/data/reports /app/data/uploads
+
+# Expose port and debug port
+EXPOSE 3000 9229
+
+# Start development server with hot reload
+CMD ["npm", "run", "dev"]

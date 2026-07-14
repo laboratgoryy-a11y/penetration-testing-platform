@@ -1,0 +1,81 @@
+═══════════════════════════════════════════════════════════
+                    START HERE - QUICK GUIDE
+═══════════════════════════════════════════════════════════
+
+🚀 EASIEST WAY TO START:
+
+   1. Double-click: تشغيل-محسّن.bat
+   2. Wait 10 seconds
+   3. Browser will open automatically
+   4. Login: admin / password
+
+═══════════════════════════════════════════════════════════
+
+❓ IF IT DOESN'T WORK:
+
+   1. Double-click: فحص-النظام.bat
+   2. Read the results
+   3. Follow the instructions
+
+═══════════════════════════════════════════════════════════
+
+🔗 IMPORTANT LINKS:
+
+   • Login: http://localhost:3001/login.html
+   • Dashboard: http://localhost:3001/index.html
+   • Test Connection: Open اختبار-الاتصال.html
+
+═══════════════════════════════════════════════════════════
+
+🔐 LOGIN CREDENTIALS:
+
+   Username: admin
+   Password: password
+
+═══════════════════════════════════════════════════════════
+
+📚 MORE INFORMATION:
+
+   • Read: ابدأ-هنا-الآن.md (Arabic)
+   • Read: الملخص-النهائي-للحل.md (Arabic)
+   • Read: ملخص-حل-مشكلة-الاتصال.md (Arabic)
+
+═══════════════════════════════════════════════════════════
+
+✅ COMMON PROBLEMS & SOLUTIONS:
+
+   Problem: "localhost refused to connect"
+   Solution: Run تشغيل-محسّن.bat
+
+   Problem: "Node.js not installed"
+   Solution: Download from https://nodejs.org
+
+   Problem: "Libraries not installed"
+   Solution: Run: npm install
+
+   Problem: "Port 3001 in use"
+   Solution: Run: taskkill /F /IM node.exe
+
+═══════════════════════════════════════════════════════════
+
+🎯 IMPORTANT FILES:
+
+   To Start:
+   • تشغيل-محسّن.bat ⭐ (Best)
+   • تشغيل-سريع.bat
+   • تشغيل-النظام.bat
+
+   To Check:
+   • فحص-النظام.bat ⭐
+   • check-server.bat
+
+   To Test:
+   • اختبار-الاتصال.html ⭐
+
+═══════════════════════════════════════════════════════════
+
+💡 TIP: Always start with تشغيل-محسّن.bat
+
+═══════════════════════════════════════════════════════════
+
+Last Updated: January 28, 2026

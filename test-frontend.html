@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الواجهة الأمامية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        .test-item {
+            padding: 10px;
+            margin: 10px 0;
+            background: #f9f9f9;
+            border-right: 4px solid #667eea;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .status.pass {
+            background: #10b981;
+            color: white;
+        }
+        .status.fail {
+            background: #ef4444;
+            color: white;
+        }
+        .status.pending {
+            background: #f59e0b;
+            color: white;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .log {
+            background: #1e293b;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .log-entry {
+            margin: 5px 0;
+        }
+        .log-error {
+            color: #ef4444;
+        }
+        .log-success {
+            color: #10b981;
+        }
+        .log-info {
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 اختبار الواجهة الأمامية</h1>
+    
+    <div class="test-section">
+        <h2>1. اختبار تحميل الملفات</h2>
+        <div id="files-test"></div>
+        <button onclick="testFilesLoading()">تشغيل الاختبار</button>
+    </div>
+
+    <div class="test-section">
+        <h2>2. اختبار Navigation Manager</h2>
+        <div id="nav-test"></div>
+        <button onclick="testNavigation()">تشغيل الاختبار</button>
+    </div>
+
+    <div class="test-section">
+        <h2>3. اختبار الإشعارات</h2>
+        <div id="notifications-test"></div>
+        <button onclick="testNotifications()">تشغيل الاختبار</button>
+    </div>
+
+    <div class="test-section">
+        <h2>4. اختبار API Client</h2>
+        <div id="api-test"></div>
+        <button onclick="testAPI()">تشغيل الاختبار</button>
+    </div>
+
+    <div class="test-section">
+        <h2>سجل الاختبارات</h2>
+        <div id="test-log" class="log"></div>
+        <button onclick="clearLog()">مسح السجل</button>
+    </div>
+
+    <script>
+        const log = [];
+        
+        function addLog(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('ar-EG');
+            log.push({ timestamp, message, type });
+            updateLogDisplay();
+        }
+        
+        function updateLogDisplay() {
+            const logDiv = document.getElementById('test-log');
+            logDiv.innerHTML = log.map(entry => 
+                `<div class="log-entry log-${entry.type}">[${entry.timestamp}] ${entry.message}</div>`
+            ).join('');
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        function clearLog() {
+            log.length = 0;
+            updateLogDisplay();
+        }
+        
+        function showStatus(containerId, tests) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = tests.map(test => {
+                const statusClass = test.pass ? 'pass' : (test.pass === null ? 'pending' : 'fail');
+                const statusText = test.pass ? '✓ نجح' : (test.pass === null ? '⏳ قيد الانتظار' : '✗ فشل');
+                return `
+                    <div class="test-item">
+                        <span class="status ${statusClass}">${statusText}</span>
+                        ${test.name}
+                        ${test.details ? `<br><small style="color: #666;">${test.details}</small>` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function testFilesLoading() {
+            addLog('بدء اختبار تحميل الملفات...', 'info');
+            
+            const tests = [
+                { name: 'تحميل notifications.js', pass: typeof notifications !== 'undefined' },
+                { name: 'تحميل showNotification function', pass: typeof showNotification === 'function' },
+                { name: 'تحميل loading.js', pass: typeof loading !== 'undefined' },
+                { name: 'تحميل api.js', pass: typeof api !== 'undefined' },
+                { name: 'تحميل auth.js', pass: typeof auth !== 'undefined' },
+                { name: 'تحميل navigationManager', pass: typeof window.navigationManager !== 'undefined' },
+                { name: 'تحميل stateManager', pass: typeof window.stateManager !== 'undefined' },
+                { name: 'تحميل operationsManager', pass: typeof window.operationsManager !== 'undefined' },
+                { name: 'تحميل webScannerManager', pass: typeof window.webScannerManager !== 'undefined' },
+                { name: 'تحميل dashboardManager', pass: typeof window.dashboardManager !== 'undefined' }
+            ];
+            
+            tests.forEach(test => {
+                if (test.pass) {
+                    addLog(`✓ ${test.name}`, 'success');
+                } else {
+                    addLog(`✗ ${test.name}`, 'error');
+                }
+            });
+            
+            showStatus('files-test', tests);
+            
+            const allPassed = tests.every(t => t.pass);
+            addLog(allPassed ? 'جميع الملفات تم تحميلها بنجاح!' : 'بعض الملفات لم يتم تحميلها', allPassed ? 'success' : 'error');
+        }
+        
+        function testNavigation() {
+            addLog('بدء اختبار Navigation Manager...', 'info');
+            
+            const tests = [
+                { 
+                    name: 'وجود navigationManager', 
+                    pass: typeof window.navigationManager !== 'undefined',
+                    details: 'التحقق من تحميل Navigation Manager'
+                },
+                { 
+                    name: 'وجود دالة navigateTo', 
+                    pass: typeof window.navigationManager?.navigateTo === 'function',
+                    details: 'التحقق من وجود دالة التنقل'
+                },
+                { 
+                    name: 'وجود دالة registerRoute', 
+                    pass: typeof window.navigationManager?.registerRoute === 'function',
+                    details: 'التحقق من وجود دالة تسجيل المسارات'
+                },
+                { 
+                    name: 'تسجيل المسارات', 
+                    pass: window.navigationManager?.routes?.size > 0,
+                    details: `عدد المسارات المسجلة: ${window.navigationManager?.routes?.size || 0}`
+                }
+            ];
+            
+            tests.forEach(test => {
+                if (test.pass) {
+                    addLog(`✓ ${test.name}`, 'success');
+                } else {
+                    addLog(`✗ ${test.name}`, 'error');
+                }
+            });
+            
+            showStatus('nav-test', tests);
+            
+            const allPassed = tests.every(t => t.pass);
+            addLog(allPassed ? 'Navigation Manager يعمل بشكل صحيح!' : 'هناك مشاكل في Navigation Manager', allPassed ? 'success' : 'error');
+        }
+        
+        function testNotifications() {
+            addLog('بدء اختبار الإشعارات...', 'info');
+            
+            const tests = [
+                { 
+                    name: 'وجود notifications object', 
+                    pass: typeof notifications !== 'undefined',
+                    details: 'التحقق من تحميل Notification Manager'
+                },
+                { 
+                    name: 'وجود دالة showNotification', 
+                    pass: typeof showNotification === 'function',
+                    details: 'التحقق من وجود الدالة العامة'
+                },
+                { 
+                    name: 'وجود دالة show', 
+                    pass: typeof notifications?.show === 'function',
+                    details: 'التحقق من وجود دالة العرض'
+                }
+            ];
+            
+            tests.forEach(test => {
+                if (test.pass) {
+                    addLog(`✓ ${test.name}`, 'success');
+                } else {
+                    addLog(`✗ ${test.name}`, 'error');
+                }
+            });
+            
+            showStatus('notifications-test', tests);
+            
+            // اختبار عملي
+            if (typeof showNotification === 'function') {
+                try {
+                    showNotification('اختبار الإشعارات', 'success', 3000);
+                    addLog('تم عرض إشعار اختباري بنجاح', 'success');
+                } catch (error) {
+                    addLog(`فشل عرض الإشعار: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        function testAPI() {
+            addLog('بدء اختبار API Client...', 'info');
+            
+            const tests = [
+                { 
+                    name: 'وجود api object', 
+                    pass: typeof api !== 'undefined',
+                    details: 'التحقق من تحميل API Client'
+                },
+                { 
+                    name: 'وجود baseURL', 
+                    pass: typeof api?.baseURL === 'string',
+                    details: `Base URL: ${api?.baseURL || 'غير محدد'}`
+                },
+                { 
+                    name: 'وجود دالة request', 
+                    pass: typeof api?.request === 'function',
+                    details: 'التحقق من وجود دالة الطلبات'
+                },
+                { 
+                    name: 'وجود دالة get', 
+                    pass: typeof api?.get === 'function',
+                    details: 'التحقق من وجود دالة GET'
+                },
+                { 
+                    name: 'وجود دالة post', 
+                    pass: typeof api?.post === 'function',
+                    details: 'التحقق من وجود دالة POST'
+                }
+            ];
+            
+            tests.forEach(test => {
+                if (test.pass) {
+                    addLog(`✓ ${test.name}`, 'success');
+                } else {
+                    addLog(`✗ ${test.name}`, 'error');
+                }
+            });
+            
+            showStatus('api-test', tests);
+            
+            const allPassed = tests.every(t => t.pass);
+            addLog(allPassed ? 'API Client جاهز للاستخدام!' : 'هناك مشاكل في API Client', allPassed ? 'success' : 'error');
+        }
+        
+        // تشغيل جميع الاختبارات عند التحميل
+        window.addEventListener('load', () => {
+            addLog('تم تحميل صفحة الاختبار', 'info');
+            addLog('جاهز لتشغيل الاختبارات', 'success');
+        });
+    </script>
+    
+    <!-- تحميل ملفات التطبيق للاختبار -->
+    <script src="/js/notifications.js"></script>
+    <script src="/js/loading.js"></script>
+    <script src="/js/state-manager.js"></script>
+    <script src="/js/navigation-manager.js"></script>
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/operations-manager.js"></script>
+    <script src="/js/web-scanner-manager.js"></script>
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل تشغيل منصة اختبار الاختراق</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+            border-right: 5px solid #764ba2;
+            padding-right: 15px;
+        }
+        .alert {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #dc3545;
+        }
+        .alert-success {
+            background: #d4edda;
+            border-color: #28a745;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            border-color: #17a2b8;
+        }
+        .step {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            border-right: 4px solid #667eea;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            direction: ltr;
+            text-align: left;
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 10px 5px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .btn-success {
+            background: #28a745;
+        }
+        .btn-success:hover {
+            background: #218838;
+        }
+        ul {
+            line-height: 2;
+        }
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 دليل تشغيل منصة اختبار الاختراق</h1>
+        
+        <div class="alert alert-danger">
+            <h3>⚠️ المشكلة الحالية</h3>
+            <p>هناك عملية معلقة في النظام تطلب تأكيداً <span class="highlight">[Y] Yes</span> أو <span class="highlight">[N] No</span></p>
+        </div>
+
+        <h2>🔧 حل المشكلة المعلقة</h2>
+        
+        <div class="step">
+            <h3>الحل 1: إنهاء العمليات المعلقة</h3>
+            <ol>
+                <li>افتح <strong>Task Manager</strong> (مدير المهام) بالضغط على: <span class="highlight">Ctrl + Shift + Esc</span></li>
+                <li>ابحث عن هذه العمليات وأنهها (End Task):
+                    <ul>
+                        <li>winget.exe</li>
+                        <li>msiexec.exe</li>
+                        <li>powershell.exe (إذا كان معلقاً)</li>
+                    </ul>
+                </li>
+                <li>أغلق جميع نوافذ PowerShell و CMD</li>
+                <li>افتح PowerShell جديد كمسؤول (Run as Administrator)</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3>الحل 2: إعادة تشغيل الجهاز</h3>
+            <p>أسهل حل: أعد تشغيل الجهاز (Restart) ثم افتح PowerShell جديد</p>
+        </div>
+
+        <h2>🚀 طرق تشغيل النظام</h2>
+
+        <div class="alert alert-success">
+            <h3>✅ الطريقة الموصى بها: Docker</h3>
+            <p>Docker سيقوم بتثبيت وتشغيل كل شيء تلقائياً (Node.js + PostgreSQL + Redis)</p>
+            <ol>
+                <li>حمل Docker Desktop من: <a href="https://www.docker.com/products/docker-desktop/" target="_blank">هنا</a></li>
+                <li>ثبته وأعد تشغيل الجهاز</li>
+                <li>شغل Docker Desktop</li>
+                <li>انقر نقراً مزدوجاً على ملف: <span class="highlight">START-DOCKER.bat</span></li>
+            </ol>
+        </div>
+
+        <div class="alert alert-info">
+            <h3>📦 الطريقة البديلة: Node.js مباشرة</h3>
+            <ol>
+                <li>انقر نقراً مزدوجاً على ملف: <span class="highlight">nodejs-installer.msi</span></li>
+                <li>اتبع خطوات التثبيت</li>
+                <li>أعد تشغيل PowerShell</li>
+                <li>ثبت PostgreSQL من: <a href="https://www.postgresql.org/download/windows/" target="_blank">هنا</a></li>
+                <li>ثبت Redis من: <a href="https://github.com/microsoftarchive/redis/releases" target="_blank">هنا</a></li>
+                <li>انقر نقراً مزدوجاً على ملف: <span class="highlight">START.bat</span></li>
+            </ol>
+        </div>
+
+        <h2>📋 الأوامر اليدوية (إذا لزم الأمر)</h2>
+        
+        <p>بعد حل المشكلة المعلقة، يمكنك تشغيل هذه الأوامر في PowerShell:</p>
+        
+        <div class="code">
+# التحقق من Node.js<br>
+node --version<br>
+npm --version<br>
+<br>
+# إعداد ملف البيئة<br>
+copy .env.example .env<br>
+<br>
+# تثبيت المكتبات<br>
+npm install<br>
+<br>
+# تشغيل النظام<br>
+npm run dev
+        </div>
+
+        <h2>🌐 الوصول للنظام</h2>
+        
+        <div class="alert alert-success">
+            <p>بعد التشغيل الناجح، افتح المتصفح على:</p>
+            <ul>
+                <li><strong>النظام الرئيسي:</strong> <a href="http://localhost:3000" target="_blank">http://localhost:3000</a></li>
+                <li><strong>توثيق API:</strong> <a href="http://localhost:3000/api-docs" target="_blank">http://localhost:3000/api-docs</a></li>
+            </ul>
+        </div>
+
+        <h2>📁 الملفات المساعدة</h2>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr style="background: #f8f9fa;">
+                <th style="padding: 10px; border: 1px solid #ddd;">الملف</th>
+                <th style="padding: 10px; border: 1px solid #ddd;">الوصف</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>START-DOCKER.bat</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">تشغيل النظام باستخدام Docker</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>START.bat</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">تشغيل النظام باستخدام Node.js</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>KILL-PENDING.bat</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">إنهاء العمليات المعلقة</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>check-system.ps1</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">فحص متطلبات النظام</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd;"><code>دليل-التشغيل-السريع.md</code></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">دليل نصي مفصل</td>
+            </tr>
+        </table>
+
+        <h2>❓ حل المشاكل الشائعة</h2>
+        
+        <div class="step">
+            <h4>المشكلة: "node is not recognized"</h4>
+            <p><strong>الحل:</strong> أعد تشغيل PowerShell بعد تثبيت Node.js، أو أعد تشغيل الجهاز</p>
+        </div>
+
+        <div class="step">
+            <h4>المشكلة: "Cannot connect to database"</h4>
+            <p><strong>الحل:</strong> تأكد من تشغيل PostgreSQL و Redis، أو استخدم Docker</p>
+        </div>
+
+        <div class="step">
+            <h4>المشكلة: "Port 3000 already in use"</h4>
+            <p><strong>الحل:</strong> غير المنفذ في ملف <code>.env</code> إلى <code>PORT=3001</code></p>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+            <h3>🎯 الخطوات المختصرة</h3>
+            <p style="font-size: 18px; line-height: 2;">
+                1️⃣ حل المشكلة المعلقة (أعد تشغيل الجهاز)<br>
+                2️⃣ ثبت Docker Desktop<br>
+                3️⃣ شغل ملف START-DOCKER.bat<br>
+                4️⃣ افتح http://localhost:3000
+            </p>
+        </div>
+    </div>
+</body>
+</html>

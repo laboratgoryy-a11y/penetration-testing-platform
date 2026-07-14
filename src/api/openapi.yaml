@@ -1,0 +1,463 @@
+openapi: 3.0.3
+info:
+  title: Penetration Testing Platform API
+  description: |
+    منصة اختبار الاختراق والأمن الهجومي - واجهة برمجة التطبيقات
+    
+    **⚠️ إخلاء المسؤولية القانونية:**
+    هذه المنصة مصممة حصرياً للاستخدام القانوني والأخلاقي في اختبار الاختراق المصرح به.
+    يجب الحصول على تصريح كتابي صريح قبل إجراء أي اختبار.
+    الاستخدام غير المصرح به لهذه الأدوات يعتبر غير قانوني ويخضع للمساءلة الجنائية.
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Development server
+  - url: https://api.example.com/v1
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and MFA operations
+  - name: Authorizations
+    description: Authorization document management
+  - name: Web Scans
+    description: Web application vulnerability scanning
+  - name: Phishing
+    description: Phishing campaign management
+  - name: Network
+    description: Network security testing
+  - name: Reports
+    description: Report generation and management
+  - name: Audit
+    description: Audit log access (auditor/admin only)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+        timestamp:
+          type: string
+          format: date-time
+
+    AuthToken:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+        userId:
+          type: string
+          format: uuid
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        mfaEnabled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        lastLogin:
+          type: string
+          format: date-time
+
+    Authorization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        organizationName:
+          type: string
+        scope:
+          type: object
+          properties:
+            domains:
+              type: array
+              items:
+                type: string
+            ipRanges:
+              type: array
+              items:
+                type: string
+            networks:
+              type: array
+              items:
+                type: object
+            emailDomains:
+              type: array
+              items:
+                type: string
+        validFrom:
+          type: string
+          format: date-time
+        validUntil:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [ACTIVE, EXPIRED, REVOKED]
+        allowedOperations:
+          type: array
+          items:
+            type: string
+            enum: [WEB_SCAN, PHISHING_CAMPAIGN, NETWORK_ANALYSIS]
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: Authenticate user with username and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                mfaToken:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        $ref: '#/components/schemas/AuthToken'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/logout:
+    post:
+      tags:
+        - Authentication
+      summary: Logout
+      description: Invalidate current session
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current user
+      description: Get information about the authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+
+  /authorizations:
+    post:
+      tags:
+        - Authorizations
+      summary: Upload authorization
+      description: Upload a new authorization document
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - organizationName
+                - scope
+                - validFrom
+                - validUntil
+                - signedBy
+                - digitalSignature
+                - allowedOperations
+              properties:
+                organizationName:
+                  type: string
+                scope:
+                  type: object
+                validFrom:
+                  type: string
+                  format: date-time
+                validUntil:
+                  type: string
+                  format: date-time
+                signedBy:
+                  type: string
+                digitalSignature:
+                  type: string
+                allowedOperations:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '201':
+          description: Authorization created
+        '400':
+          description: Invalid input
+        '403':
+          description: Forbidden
+
+    get:
+      tags:
+        - Authorizations
+      summary: List authorizations
+      description: Get all authorizations for current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of authorizations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      authorizations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Authorization'
+
+  /scans/web:
+    post:
+      tags:
+        - Web Scans
+      summary: Start web scan
+      description: Start a new web application vulnerability scan
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - target
+                - config
+              properties:
+                target:
+                  type: object
+                  properties:
+                    url:
+                      type: string
+                      format: uri
+                    authorizationId:
+                      type: string
+                      format: uuid
+                config:
+                  type: object
+                  properties:
+                    vulnerabilityTypes:
+                      type: array
+                      items:
+                        type: string
+                    maxDepth:
+                      type: integer
+                    maxRequests:
+                      type: integer
+      responses:
+        '201':
+          description: Scan started
+        '400':
+          description: Invalid input
+        '403':
+          description: Authorization required
+
+  /phishing/campaigns:
+    post:
+      tags:
+        - Phishing
+      summary: Create campaign
+      description: Create a new phishing campaign
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - authorizationId
+                - targets
+                - emailTemplate
+                - landingPage
+                - schedule
+              properties:
+                name:
+                  type: string
+                authorizationId:
+                  type: string
+                  format: uuid
+                targets:
+                  type: array
+                  items:
+                    type: object
+                emailTemplate:
+                  type: object
+                landingPage:
+                  type: object
+                schedule:
+                  type: object
+      responses:
+        '201':
+          description: Campaign created
+        '400':
+          description: Invalid input
+        '403':
+          description: Authorization required
+
+  /network/discover:
+    post:
+      tags:
+        - Network
+      summary: Discover access points
+      description: Discover wireless access points
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - authorizationId
+              properties:
+                authorizationId:
+                  type: string
+                  format: uuid
+      responses:
+        '200':
+          description: Access points discovered
+        '403':
+          description: Authorization required
+
+  /audit/logs:
+    get:
+      tags:
+        - Audit
+      summary: Get audit logs
+      description: Retrieve audit logs (auditor/admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: string
+            format: uuid
+        - name: eventTypes
+          in: query
+          schema:
+            type: string
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Audit logs retrieved
+        '403':
+          description: Forbidden (requires auditor/admin role)

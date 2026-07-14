@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصريح استخدام النظام</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 800px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        .header {
+            color: #667eea;
+            margin-bottom: 30px;
+        }
+        .notice {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px 0;
+            text-align: right;
+        }
+        .notice h3 {
+            color: #333;
+            margin-top: 0;
+        }
+        .notice p {
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #666;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 تصريح استخدام منصة اختبار الاختراق</h1>
+            <p>الرجاء قراءة التصريح بعناية قبل استخدام النظام</p>
+        </div>
+
+        <div class="notice">
+            <h3>⚠️ إشعار هام</h3>
+            <p><strong>هذه المنصة مخصصة للاستخدام الشرعي والمصرح به فقط.</strong></p>
+            <p>يجب الحصول على تصريح رسمي من الجهات المختصة قبل استخدام أي من وظائف الفحص الأمني.</p>
+            <p>المستخدم مسؤول تماماً عن أي استخدام غير مصرح به أو يخالف القوانين المعمول بها.</p>
+            <p><strong>التصاريح المطلوبة:</strong></p>
+            <ul style="text-align: right; direction: rtl;">
+                <li>فحص الويب (WEB_SCAN)</li>
+                <li>فحص الشبكات (NETWORK_TEST)</li>
+                <li>اختبار الاختراق (PENETRATION_TEST)</li>
+            </ul>
+        </div>
+
+        <div class="notice">
+            <h3>📋 شروط الاستخدام</h3>
+            <p>1. استخدام النظام للأغراض الأمنية المشروعة فقط</p>
+            <p>2. الحصول على موافقة كتابية قبل فحص أي شبكة أو نظام</p>
+            <p>3. الالتزام بجميع القوانين واللوائح المحلية والدولية</p>
+            <p>4. عدم المساس بخصوصية وأمان البيانات الشخصية</p>
+        </div>
+
+        <div class="footer">
+            <p>بتصفحك لهذه الصفحة، فإنك تقر بأنك حصلت على التصاريح اللازمة</p>
+            <p>وأنك ستلتزم بجميع شروط الاستخدام المذكورة أعلاه.</p>
+            
+            <button class="btn" onclick="window.location.href='/login.html'">
+                أوافق - الذهاب إلى صفحة الدخول
+            </button>
+            
+            <button class="btn" onclick="window.location.href='/welcome.html'" style="background: #6c757d;">
+                العودة للصفحة الرئيسية
+            </button>
+        </div>
+    </div>
+</body>
+</html>
