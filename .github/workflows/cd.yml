@@ -62,7 +62,7 @@ jobs:
         cache-to: type=gha,mode=max
     
     - name: Deploy to staging server
-      uses: appleboy/ssh-action@v1.0.0
+      uses: appleboy/ssh-action@v1.2.5
       with:
         host: ${{ secrets.STAGING_HOST }}
         username: ${{ secrets.STAGING_USER }}
@@ -148,7 +148,7 @@ jobs:
         cache-to: type=gha,mode=max
     
     - name: Create backup
-      uses: appleboy/ssh-action@v1.0.0
+      uses: appleboy/ssh-action@v1.2.5
       with:
         host: ${{ secrets.PROD_HOST }}
         username: ${{ secrets.PROD_USER }}
@@ -158,7 +158,7 @@ jobs:
           ./scripts/backup-database.sh
     
     - name: Deploy to production server
-      uses: appleboy/ssh-action@v1.0.0
+      uses: appleboy/ssh-action@v1.2.5
       with:
         host: ${{ secrets.PROD_HOST }}
         username: ${{ secrets.PROD_USER }}
@@ -193,7 +193,7 @@ jobs:
     
     - name: Rollback on failure
       if: failure()
-      uses: appleboy/ssh-action@v1.0.0
+      uses: appleboy/ssh-action@v1.2.5
       with:
         host: ${{ secrets.PROD_HOST }}
         username: ${{ secrets.PROD_USER }}
